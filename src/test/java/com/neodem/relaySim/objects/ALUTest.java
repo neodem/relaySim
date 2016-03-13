@@ -28,57 +28,24 @@ public class ALUTest {
         alu = null;
     }
 
-    @Test
-    public void doAdditionShoudAddStuff() throws Exception {
-        ALUConnector c = new ALUConnector();
-        c.setAInput(0, 0, 0, 1);
-        c.setBInput(0, 0, 0, 1);
-        c.setCarryIn(0);
-
-        alu.doAddition(c);
-
-        assertThat(c.getCarryOut()).isEqualTo(0);
-        assertThat(c.getOutput().get(0)).isEqualTo(0);
-        assertThat(c.getOutput().get(1)).isEqualTo(1);
-        assertThat(c.getOutput().get(2)).isEqualTo(0);
-        assertThat(c.getOutput().get(3)).isEqualTo(0);
-    }
-
-    @Test
-    public void doAdditionShoudAddStuff1() throws Exception {
-        ALUConnector c = new ALUConnector();
-        c.setAInput(0, 0, 1, 0);
-        c.setBInput(0, 0, 1, 0);
-        c.setCarryIn(0);
-
-        alu.doAddition(c);
-
-        assertThat(c.getCarryOut()).isEqualTo(0);
-        assertThat(c.getOutput().get(0)).isEqualTo(0);
-        assertThat(c.getOutput().get(1)).isEqualTo(0);
-        assertThat(c.getOutput().get(2)).isEqualTo(1);
-        assertThat(c.getOutput().get(3)).isEqualTo(0);
-    }
-
     @Test(dataProvider = "aluAdd")
-    public void doAdditionShoudAddStuff3() throws Exception {
+    public void doAdditionShoudAddStuff3(int a0, int a1, int a2, int a3, int b0, int b1, int b2, int b3,
+                                         int o0, int o1, int o2, int o3, int cout) throws Exception {
+
         ALUConnector c = new ALUConnector();
-        c.setAInput(0, 0, 1, 1);
-        c.setBInput(0, 0, 0, 1);
+        c.setAInput(a3, a2, a1, a0);
+        c.setBInput(b3, b2, b1, b0);
         c.setCarryIn(0);
 
         alu.doAddition(c);
 
-        assertThat(c.getOutput().get(0)).isEqualTo(0);
-        assertThat(c.getOutput().get(1)).isEqualTo(0);
-        assertThat(c.getOutput().get(2)).isEqualTo(0);
-        assertThat(c.getOutput().get(3)).isEqualTo(0);
-        assertThat(c.getCarryOut()).isEqualTo(1);
-    }
+        System.out.println(c.display());
 
-    private void put(int value, List<List<Integer>> list) {
-        List<Integer> val = BitTools.convertToList(value, 4);
-        list.add(val);
+        assertThat(c.getOutput().get(0)).isEqualTo(o0);
+        assertThat(c.getOutput().get(1)).isEqualTo(o1);
+        assertThat(c.getOutput().get(2)).isEqualTo(o2);
+        assertThat(c.getOutput().get(3)).isEqualTo(o3);
+        assertThat(c.getCarryOut()).isEqualTo(cout);
     }
 
     @DataProvider(name = "aluAdd")
@@ -88,37 +55,33 @@ public class ALUTest {
         List<List<Integer>> outVals = new ArrayList<>();
 
         int out;
-        for (int a = 0; a < 8; a++) {
-            for (int b = 0; b < 8; b++) {
+        for (int a = 0; a < 16; a++) {
+            for (int b = 0; b < 16; b++) {
                 out = a + b;
-                put(a, aVals);
-                put(b, bVals);
-                put(out, outVals);
+
+                List<Integer> val = BitTools.convertToList(a, 4);
+                aVals.add(val);
+
+                val = BitTools.convertToList(b, 4);
+                bVals.add(val);
+
+                val = BitTools.convertToList(out, 5);
+                outVals.add(val);
             }
         }
 
-        List<List<Integer>> vals = new ArrayList();
-        for (int i = 0; i < 65; i++) {
+        Object[][] all = new Object[256][];
+        for (int i = 0; i < 256; i++) {
             List<Integer> row = new ArrayList<>();
             row.addAll(aVals.get(i));
             row.addAll(bVals.get(i));
             row.addAll(outVals.get(i));
-            vals.add(row);
+
+            all[i] = row.toArray(new Object[row.size()]);
         }
 
-
-        return new Object[][]{
-                // a3,a2,a1,a0 b3,b2,b1,b0, o3,o2,o1,o0, cin,cout
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        };
+        // a0,a1,a2,a3,b0,b1,b2,b3,o0,o1,o2,o3,cout
+        return all;
     }
 
 

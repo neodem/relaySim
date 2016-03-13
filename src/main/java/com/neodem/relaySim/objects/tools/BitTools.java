@@ -56,4 +56,17 @@ public class BitTools {
 
         return result;
     }
+
+    public static String makeString(List<Integer> bitList) {
+        StringBuffer b = new StringBuffer();
+
+        for(int i=bitList.size()-1; i>=0; i--) {
+            int val = bitList.get(i);
+            if(val == 1) b.append('1');
+            else b.append('0');
+        }
+
+        return b.toString();
+    }
 }
+

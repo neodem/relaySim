@@ -1,5 +1,7 @@
 package com.neodem.relaySim.objects;
 
+import com.neodem.relaySim.objects.tools.BitTools;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,5 +69,20 @@ public class ALUConnector extends Connector {
     public void setOutput(List<Integer> output) {
         trigger();
         this.output = output;
+    }
+
+    public String display() {
+        StringBuffer b = new StringBuffer();
+        b.append("a=");
+        b.append(BitTools.makeString(aInput));
+        b.append(' ');
+        b.append("b=");
+        b.append(BitTools.makeString(bInput));
+        b.append(' ');
+        b.append("o=");
+        b.append(BitTools.makeString(output));
+        if(carryOut == 1) b.append(" carryOut");
+
+        return b.toString();
     }
 }
