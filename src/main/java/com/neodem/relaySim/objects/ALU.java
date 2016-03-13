@@ -32,29 +32,26 @@ public class ALU implements ConnectorListener {
         }
     }
 
-    private void doAddition(ALUConnector connector) {
-        List<Boolean> a = connector.getAInputs();
-        List<Boolean> b = connector.getBInputs();
-        add(a, b, connector);
-    }
-
-    private void add(List<Boolean> a, List<Boolean> b, ALUConnector connector) {
-        boolean carry = connector.getCarryIn();
-        List<Boolean> output = new ArrayList<>(4);
+    protected void doAddition(ALUConnector connector) {
+        List<Integer> a = connector.getAInput();
+        List<Integer> b = connector.getBInput();
+        int carry = connector.getCarryIn();
+        List<Integer> output = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
-            Boolean bitA = a.get(i);
-            Boolean bitB = b.get(i);
-            if (bitA && bitB) {
+            int bitA = a.get(i);
+            int bitB = b.get(i);
+            if (bitA == 1 && bitB == 1) {
                 output.add(i, carry);
-                carry = true;
-            } else if (bitA || bitB) {
-                if (carry) {
-                    carry = false;
+                carry = 1;
+            } else if (bitA == 1 || bitB == 1) {
+                if (carry == 1) {
+                    carry = 0;
                 }
-                output.add(i, true);
+                output.add(i, 1);
+            } else {
+                output.add(i, carry);
+                carry = 0;
             }
-                else output.add(i, carry);
-
         }
         connector.setOutput(output);
         connector.setCarryOut(carry);
