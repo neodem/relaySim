@@ -1,73 +1,71 @@
 package com.neodem.relaySim.objects;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by vfumo on 3/13/16.
  */
-public class ALU implements ConnectorListener {
+public class ALU {
 
-    private ALUConnector connector;
-
-    public void modified() {
-        calculate();
-    }
-
-    private void calculate() {
-        ALUOperation operation = connector.getOperation();
+    public AluOutput compute(AluInput input) {
+        ALUOperation operation = input.getOperation();
+        AluOutput result = null;
         switch (operation) {
             case ADD:
-                doAddition(connector);
+                result = doAddition(input);
                 break;
             case OR:
-                doOr(connector);
+                result = doOr(input);
                 break;
             case AND:
-                doAnd(connector);
+                result = doAnd(input);
                 break;
             case XOR:
-                doXor(connector);
+                result = doXor(input);
                 break;
         }
+
+        return result;
     }
 
-    protected void doAddition(ALUConnector connector) {
-        List<Integer> a = connector.getAInput();
-        List<Integer> b = connector.getBInput();
-        int carry = connector.getCarryIn();
-        List<Integer> output = new ArrayList<>(4);
+    protected AluOutput doAddition(AluInput input) {
+        BitField a = input.getA();
+        BitField b = input.getB();
+        boolean carry = input.getCarryIn();
+        BitField output = new BitField(4);
         for (int i = 0; i < 4; i++) {
-            int bitA = a.get(i);
-            int bitB = b.get(i);
-            if (bitA == 1 && bitB == 1) {
-                output.add(i, carry);
-                carry = 1;
-            } else if (bitA == 1 || bitB == 1) {
-                if (carry == 1) {
-                    carry = 0;
+            boolean bitA = a.getBit(i);
+            boolean bitB = b.getBit(i);
+            if (bitA && bitB) {
+                output.addBit(i, carry);
+                carry = true;
+            } else if (bitA || bitB) {
+                if (carry) {
+                    carry = false;
                 }
-                output.add(i, 1);
+                output.addBit(i, 1);
             } else {
-                output.add(i, carry);
-                carry = 0;
+                output.addBit(i, carry);
+                carry = false;
             }
         }
-        connector.setOutput(output);
-        connector.setCarryOut(carry);
+
+        AluOutput result = new AluOutput();
+
+        result.setOutput(output);
+        result.setCarryOut(carry);
+
+        return result;
     }
 
-    private void doOr(ALUConnector connector) {
+    private AluOutput doOr(AluInput input) {
+        return null;
     }
 
-    private void doAnd(ALUConnector connector) {
+    private AluOutput doAnd(AluInput input) {
+        return null;
     }
 
-    private void doXor(ALUConnector connector) {
+    private AluOutput doXor(AluInput input) {
+        return null;
     }
 
-    public void setConnector(ALUConnector connector) {
-        this.connector = connector;
-        this.connector.registerListener(this);
-    }
 }

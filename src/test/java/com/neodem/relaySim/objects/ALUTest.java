@@ -32,20 +32,20 @@ public class ALUTest {
     public void doAdditionShoudAddStuff3(int a0, int a1, int a2, int a3, int b0, int b1, int b2, int b3,
                                          int o0, int o1, int o2, int o3, int cout) throws Exception {
 
-        ALUConnector c = new ALUConnector();
-        c.setAInput(a3, a2, a1, a0);
-        c.setBInput(b3, b2, b1, b0);
-        c.setCarryIn(0);
+        AluInput input = new AluInput();
+        input.setA(a3, a2, a1, a0);
+        input.setB(b3, b2, b1, b0);
+        input.setCarryIn(false);
+        input.setOperation(ALUOperation.ADD);
 
-        alu.doAddition(c);
+        AluOutput out = alu.compute(input);
+        System.out.println(input + " " + out);
 
-        System.out.println(c.display());
-
-        assertThat(c.getOutput().get(0)).isEqualTo(o0);
-        assertThat(c.getOutput().get(1)).isEqualTo(o1);
-        assertThat(c.getOutput().get(2)).isEqualTo(o2);
-        assertThat(c.getOutput().get(3)).isEqualTo(o3);
-        assertThat(c.getCarryOut()).isEqualTo(cout);
+        assertThat(out.getOutput().getBitAsInt(0)).isEqualTo(o0);
+        assertThat(out.getOutput().getBitAsInt(1)).isEqualTo(o1);
+        assertThat(out.getOutput().getBitAsInt(2)).isEqualTo(o2);
+        assertThat(out.getOutput().getBitAsInt(3)).isEqualTo(o3);
+        assertThat(out.getCarryOutAsInt()).isEqualTo(cout);
     }
 
     @DataProvider(name = "aluAdd")
