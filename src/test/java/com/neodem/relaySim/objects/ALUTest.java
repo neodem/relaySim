@@ -28,6 +28,40 @@ public class ALUTest {
         alu = null;
     }
 
+    @Test
+    public void addShouldWork() throws Exception {
+        assertThat(alu.add(false, false, false)).isFalse();
+        assertThat(alu.add(true, false, false)).isTrue();
+        assertThat(alu.add(false, true, false)).isTrue();
+        assertThat(alu.add(true, true, false)).isFalse();
+
+        assertThat(alu.add(false, false, true)).isTrue();
+        assertThat(alu.add(true, false, true)).isFalse();
+        assertThat(alu.add(false, true, true)).isFalse();
+        assertThat(alu.add(true, true, true)).isTrue();
+    }
+
+    @Test
+    public void carryShouldWork() throws Exception {
+        assertThat(alu.carry(false, false, false)).isFalse();
+        assertThat(alu.carry(true, false, false)).isFalse();
+        assertThat(alu.carry(false, true, false)).isFalse();
+        assertThat(alu.carry(true, true, false)).isTrue();
+
+        assertThat(alu.carry(false, false, true)).isFalse();
+        assertThat(alu.carry(true, false, true)).isTrue();
+        assertThat(alu.carry(false, true, true)).isTrue();
+        assertThat(alu.carry(true, true, true)).isTrue();
+    }
+
+    @Test
+    public void xorShouldWork() throws Exception {
+        assertThat(alu.xor(false, false)).isFalse();
+        assertThat(alu.xor(true, false)).isTrue();
+        assertThat(alu.xor(false, true)).isTrue();
+        assertThat(alu.xor(true, true)).isFalse();
+    }
+
     @Test(dataProvider = "aluAdd")
     public void doAdditionShoudAddStuff3(int a0, int a1, int a2, int a3, int b0, int b1, int b2, int b3,
                                          int o0, int o1, int o2, int o3, int cout) throws Exception {

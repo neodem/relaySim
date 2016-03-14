@@ -49,14 +49,19 @@ public class ALU {
         return result;
     }
 
-    private boolean add(boolean a, boolean b, boolean carry) {
-        if(a && b) return false;
-        if(a || b) return true;
-        return false;
+    protected boolean add(boolean a, boolean b, boolean carry) {
+        boolean result = xor(a, b);
+        if (carry) return !result;
+        return result;
     }
 
-    private boolean carry(boolean a, boolean b, boolean carry) {
-        if(a && b) return true;
+    protected boolean carry(boolean a, boolean b, boolean carry) {
+        if (carry) return (a || b);
+        return (a && b);
+    }
+
+    protected boolean xor(boolean a, boolean b) {
+        if (a || b) return !(a && b);
         return false;
     }
 
