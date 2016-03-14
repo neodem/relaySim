@@ -13,11 +13,11 @@ public class BitField {
         this.data = new ArrayList<>(size);
     }
 
-    public void addBit(int pos, boolean val) {
+    public void setBit(int pos, boolean val) {
         data.add(pos, val);
     }
 
-    public void addBit(int pos, int value) {
+    public void setBit(int pos, int value) {
         boolean val = true;
         if (value == 0) val = false;
         data.add(pos, val);
@@ -26,7 +26,7 @@ public class BitField {
     public boolean getBit(int pos) {
         return data.get(pos);
     }
-    
+
     public int getBitAsInt(int pos) {
         boolean bit = getBit(pos);
         return bit ? 1 : 0;

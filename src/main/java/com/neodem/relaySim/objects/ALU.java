@@ -34,18 +34,11 @@ public class ALU {
         for (int i = 0; i < 4; i++) {
             boolean bitA = a.getBit(i);
             boolean bitB = b.getBit(i);
-            if (bitA && bitB) {
-                output.addBit(i, carry);
-                carry = true;
-            } else if (bitA || bitB) {
-                if (carry) {
-                    carry = false;
-                }
-                output.addBit(i, 1);
-            } else {
-                output.addBit(i, carry);
-                carry = false;
-            }
+
+            boolean result = add(bitA, bitB, carry);
+            carry = carry(bitA, bitB, carry);
+
+            output.setBit(i, result);
         }
 
         AluOutput result = new AluOutput();
@@ -54,6 +47,17 @@ public class ALU {
         result.setCarryOut(carry);
 
         return result;
+    }
+
+    private boolean add(boolean a, boolean b, boolean carry) {
+        if(a && b) return false;
+        if(a || b) return true;
+        return false;
+    }
+
+    private boolean carry(boolean a, boolean b, boolean carry) {
+        if(a && b) return true;
+        return false;
     }
 
     private AluOutput doOr(AluInput input) {

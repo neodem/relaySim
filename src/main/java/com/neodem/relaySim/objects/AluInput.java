@@ -34,17 +34,17 @@ public class AluInput {
     }
 
     public void setB(int bit3, int bit2, int bit1, int bit0) {
-        b.addBit(0, bit0);
-        b.addBit(1, bit1);
-        b.addBit(2, bit2);
-        b.addBit(3, bit3);
+        b.setBit(0, bit0);
+        b.setBit(1, bit1);
+        b.setBit(2, bit2);
+        b.setBit(3, bit3);
     }
 
     public void setA(int bit3, int bit2, int bit1, int bit0) {
-        a.addBit(0, bit0);
-        a.addBit(1, bit1);
-        a.addBit(2, bit2);
-        a.addBit(3, bit3);
+        a.setBit(0, bit0);
+        a.setBit(1, bit1);
+        a.setBit(2, bit2);
+        a.setBit(3, bit3);
     }
 
     public boolean getCarryIn() {
