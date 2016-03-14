@@ -1,5 +1,7 @@
 package com.neodem.relaySim.objects;
 
+import com.neodem.relaySim.tools.BitTools;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,10 @@ public class BitField {
     public int getBitAsInt(int pos) {
         boolean bit = getBit(pos);
         return bit ? 1 : 0;
+    }
+
+    public int intValue() {
+        return BitTools.makeInt(data);
     }
 
     @Override

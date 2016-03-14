@@ -1,4 +1,4 @@
-package com.neodem.relaySim.objects.tools;
+package com.neodem.relaySim.tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,16 +57,26 @@ public class BitTools {
         return result;
     }
 
-    public static String makeString(List<Integer> bitList) {
-        StringBuffer b = new StringBuffer();
+    public static int makeInt(List<Boolean> data) {
+        int result = 0;
 
-        for(int i=bitList.size()-1; i>=0; i--) {
-            int val = bitList.get(i);
-            if(val == 1) b.append('1');
-            else b.append('0');
+        for(int i=0; i<data.size(); i++) {
+            boolean bit = data.get(i);
+            if(bit) {
+                double pow = Math.pow(2, i);
+                result += pow;
+            }
         }
 
-        return b.toString();
+        return result;
+    }
+
+    public static boolean bit(int bitIndex, int value) {
+        int mask =  1 << bitIndex;
+        int masked_n = value & mask;
+        int thebit = masked_n >> bitIndex;
+
+        return thebit == 1;
     }
 }
 

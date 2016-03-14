@@ -1,6 +1,6 @@
 package com.neodem.relaySim.objects;
 
-import com.neodem.relaySim.objects.tools.BitTools;
+import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -63,8 +63,7 @@ public class ALUTest {
     }
 
     @Test(dataProvider = "aluAdd")
-    public void doAdditionShoudAddStuff3(int a0, int a1, int a2, int a3, int b0, int b1, int b2, int b3,
-                                         int o0, int o1, int o2, int o3, int cout) throws Exception {
+    public void doAdditionShoudAddWithNoCarry(int a0, int a1, int a2, int a3, int b0, int b1, int b2, int b3) {
 
         AluInput input = new AluInput();
         input.setA(a3, a2, a1, a0);
@@ -72,35 +71,32 @@ public class ALUTest {
         input.setCarryIn(false);
         input.setOperation(ALUOperation.ADD);
 
+        int aInt = input.getA().intValue();
+        int bInt = input.getB().intValue();
+        int expected = aInt + bInt;
+
         AluOutput out = alu.compute(input);
         System.out.println(input + " " + out);
 
-        assertThat(out.getOutput().getBitAsInt(0)).isEqualTo(o0);
-        assertThat(out.getOutput().getBitAsInt(1)).isEqualTo(o1);
-        assertThat(out.getOutput().getBitAsInt(2)).isEqualTo(o2);
-        assertThat(out.getOutput().getBitAsInt(3)).isEqualTo(o3);
-        assertThat(out.getCarryOutAsInt()).isEqualTo(cout);
+        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0,expected));
+        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1,expected));
+        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2,expected));
+        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3,expected));
+        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4,expected));
     }
 
     @DataProvider(name = "aluAdd")
     public Object[][] aluAdd() {
         List<List<Integer>> aVals = new ArrayList<>();
         List<List<Integer>> bVals = new ArrayList<>();
-        List<List<Integer>> outVals = new ArrayList<>();
 
-        int out;
         for (int a = 0; a < 16; a++) {
             for (int b = 0; b < 16; b++) {
-                out = a + b;
-
                 List<Integer> val = BitTools.convertToList(a, 4);
                 aVals.add(val);
 
                 val = BitTools.convertToList(b, 4);
                 bVals.add(val);
-
-                val = BitTools.convertToList(out, 5);
-                outVals.add(val);
             }
         }
 
@@ -109,14 +105,11 @@ public class ALUTest {
             List<Integer> row = new ArrayList<>();
             row.addAll(aVals.get(i));
             row.addAll(bVals.get(i));
-            row.addAll(outVals.get(i));
 
             all[i] = row.toArray(new Object[row.size()]);
         }
 
-        // a0,a1,a2,a3,b0,b1,b2,b3,o0,o1,o2,o3,cout
+        // a0,a1,a2,a3,b0,b1,b2,b3
         return all;
     }
-
-
 }
