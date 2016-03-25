@@ -1,75 +1,68 @@
 package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
+import com.neodem.relaySim.objects.BitField4;
+import com.neodem.relaySim.objects.Component;
 
 import java.util.function.BiFunction;
 
 /**
  * Created by vfumo on 3/13/16.
  */
-public class ALU {
+public class ALU implements Component {
 
-    public AluOutput compute(AluInput input) {
-        ALUOperation operation = input.getOperation();
-        AluOutput result = null;
-        switch (operation) {
+    private BitField out = new BitField4();
+    private BitField inA;
+    private BitField inB;
+    private ALUOperation op;
+    private boolean carryIn;
+    private boolean carryOut = false;
+
+    public void setOperation(ALUOperation op) {
+        this.op = op;
+
+        switch (op) {
             case ADD:
-                result = doAddition(input);
+                carryOut = doAddition(inA, inB, carryIn);
                 break;
             case OR:
-                result = process(input, ALU::or);
+                process(inA, inB, ALU::or);
                 break;
             case AND:
-                result = process(input, ALU::and);
+                process(inA, inB, ALU::and);
                 break;
             case XOR:
-                result = process(input, ALU::xor);
+                process(inA, inB, ALU::xor);
                 break;
         }
-
-        return result;
     }
 
-    protected AluOutput doAddition(AluInput input) {
-        BitField a = input.getA();
-        BitField b = input.getB();
-        boolean carry = input.getCarryIn();
-        BitField output = new BitField(4);
+    /**
+     *
+     * @param a
+     * @param b
+     * @param carry
+     * @return true if we overflow
+     */
+    protected boolean doAddition(BitField a, BitField b, boolean carry) {
         for (int i = 0; i < 4; i++) {
             boolean bitA = a.getBit(i);
             boolean bitB = b.getBit(i);
-
             boolean result = add(bitA, bitB, carry);
             carry = carry(bitA, bitB, carry);
-
-            output.setBit(i, result);
+            out.setBit(i, result);
         }
-
-        AluOutput result = new AluOutput();
-
-        result.setOutput(output);
-        result.setCarryOut(carry);
-
-        return result;
+        return carry;
     }
 
-    protected AluOutput process(AluInput input, BiFunction<Boolean, Boolean, Boolean> function) {
-        BitField a = input.getA();
-        BitField b = input.getB();
-        BitField output = new BitField(4);
+
+    protected void process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
         for (int i = 0; i < 4; i++) {
             boolean bitA = a.getBit(i);
             boolean bitB = b.getBit(i);
 
-            boolean result = function.apply(bitA, bitB);
-
-            output.setBit(i, result);
+            out.setBit(i, function.apply(bitA, bitB));
         }
-
-        AluOutput result = new AluOutput();
-        result.setOutput(output);
-
-        return result;
     }
 
     protected static Boolean or(Boolean a, Boolean b) {
@@ -94,5 +87,62 @@ public class ALU {
     protected static boolean carry(boolean a, boolean b, boolean carry) {
         if (carry) return (a || b);
         return (a && b);
+    }
+
+    public String toString() {
+        StringBuffer b = new StringBuffer();
+
+        b.append(op);
+        b.append(": ");
+
+        if (carryIn) b.append("C ");
+        else b.append("  ");
+        b.append("a=");
+        b.append(inA);
+        b.append(' ');
+        b.append("b=");
+        b.append(inB);
+        b.append(' ');
+        b.append("o=");
+        b.append(out);
+        if(carryOut) b.append(" carryOut");
+
+        return b.toString();
+    }
+
+    public void setInA(BitField inA) {
+        this.inA = inA;
+    }
+
+    public void setInB(BitField inB) {
+        this.inB = inB;
+    }
+
+    public void setCarryIn(boolean carryIn) {
+        this.carryIn = carryIn;
+    }
+
+    public BitField getOut() {
+        return out;
+    }
+
+    public ALUOperation getOp() {
+        return op;
+    }
+
+    public boolean getCarryOut() {
+        return carryOut;
+    }
+
+    public BitField getInA() {
+        return inA;
+    }
+
+    public BitField getInB() {
+        return inB;
+    }
+
+    public boolean getCarryIn() {
+        return carryIn;
     }
 }
