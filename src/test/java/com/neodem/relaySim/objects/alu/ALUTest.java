@@ -1,4 +1,4 @@
-package com.neodem.relaySim.objects;
+package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.AfterMethod;
@@ -94,11 +94,11 @@ public class ALUTest {
         AluOutput out = alu.compute(input);
         System.out.println("ADD: " + input + " " + out);
 
-        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0,expected));
-        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1,expected));
-        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2,expected));
-        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3,expected));
-        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4,expected));
+        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
     @Test(dataProvider = "all4bits")
@@ -117,11 +117,11 @@ public class ALUTest {
         AluOutput out = alu.compute(input);
         System.out.println("OR:  " + input + " " + out);
 
-        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0,expected));
-        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1,expected));
-        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2,expected));
-        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3,expected));
-        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4,expected));
+        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
     @Test(dataProvider = "all4bits")
@@ -140,11 +140,11 @@ public class ALUTest {
         AluOutput out = alu.compute(input);
         System.out.println("AND: " + input + " " + out);
 
-        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0,expected));
-        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1,expected));
-        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2,expected));
-        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3,expected));
-        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4,expected));
+        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
     @Test(dataProvider = "all4bits")
@@ -163,11 +163,11 @@ public class ALUTest {
         AluOutput out = alu.compute(input);
         System.out.println("XOR: " + input + " " + out);
 
-        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0,expected));
-        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1,expected));
-        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2,expected));
-        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3,expected));
-        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4,expected));
+        assertThat(out.getOutput().getBit(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getOutput().getBit(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getOutput().getBit(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getOutput().getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
     @DataProvider(name = "all4bits")

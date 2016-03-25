@@ -1,4 +1,6 @@
-package com.neodem.relaySim.objects;
+package com.neodem.relaySim.objects.alu;
+
+import com.neodem.relaySim.objects.BitField;
 
 /**
  * Created by vfumo on 3/13/16.

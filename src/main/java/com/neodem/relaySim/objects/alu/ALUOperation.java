@@ -1,4 +1,4 @@
-package com.neodem.relaySim.objects;
+package com.neodem.relaySim.objects.alu;
 
 /**
  * Created by vfumo on 3/13/16.
