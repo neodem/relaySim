@@ -1,5 +1,7 @@
 package com.neodem.relaySim.objects;
 
+import java.util.function.BiFunction;
+
 /**
  * Created by vfumo on 3/13/16.
  */
@@ -13,13 +15,13 @@ public class ALU {
                 result = doAddition(input);
                 break;
             case OR:
-                result = doOr(input);
+                result = process(input, ALU::or);
                 break;
             case AND:
-                result = doAnd(input);
+                result = process(input, ALU::and);
                 break;
             case XOR:
-                result = doXor(input);
+                result = process(input, ALU::xor);
                 break;
         }
 
@@ -49,32 +51,46 @@ public class ALU {
         return result;
     }
 
-    protected boolean add(boolean a, boolean b, boolean carry) {
+    protected AluOutput process(AluInput input, BiFunction<Boolean, Boolean, Boolean> function) {
+        BitField a = input.getA();
+        BitField b = input.getB();
+        BitField output = new BitField(4);
+        for (int i = 0; i < 4; i++) {
+            boolean bitA = a.getBit(i);
+            boolean bitB = b.getBit(i);
+
+            boolean result = function.apply(bitA, bitB);
+
+            output.setBit(i, result);
+        }
+
+        AluOutput result = new AluOutput();
+        result.setOutput(output);
+
+        return result;
+    }
+
+    protected static Boolean or(Boolean a, Boolean b) {
+        return a || b;
+    }
+
+    protected static Boolean and(Boolean a, Boolean b) {
+        return a && b;
+    }
+
+    protected static Boolean xor(Boolean a, Boolean b) {
+        if (a || b) return !(a && b);
+        return false;
+    }
+
+    protected static boolean add(boolean a, boolean b, boolean carry) {
         boolean result = xor(a, b);
         if (carry) return !result;
         return result;
     }
 
-    protected boolean carry(boolean a, boolean b, boolean carry) {
+    protected static boolean carry(boolean a, boolean b, boolean carry) {
         if (carry) return (a || b);
         return (a && b);
     }
-
-    protected boolean xor(boolean a, boolean b) {
-        if (a || b) return !(a && b);
-        return false;
-    }
-
-    private AluOutput doOr(AluInput input) {
-        return null;
-    }
-
-    private AluOutput doAnd(AluInput input) {
-        return null;
-    }
-
-    private AluOutput doXor(AluInput input) {
-        return null;
-    }
-
 }
