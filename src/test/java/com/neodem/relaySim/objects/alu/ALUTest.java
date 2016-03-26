@@ -90,7 +90,7 @@ public class ALUTest {
         int bInt = b.intValue();
         int expected = aInt + bInt;
 
-        alu.setOperation(ALUOperation.ADD);
+        alu.setControl(ALU.convertControl(ALUOperation.ADD, false));
 
         System.out.println(alu);
 
@@ -113,7 +113,7 @@ public class ALUTest {
         int bInt = b.intValue();
 
         int expected = aInt | bInt;
-        alu.setOperation(ALUOperation.OR);
+        alu.setControl(ALU.convertControl(ALUOperation.OR, false));
 
         System.out.println(alu);
 
@@ -136,7 +136,7 @@ public class ALUTest {
         int bInt = b.intValue();
 
         int expected = aInt & bInt;
-        alu.setOperation(ALUOperation.AND);
+        alu.setControl(ALU.convertControl(ALUOperation.AND, false));
 
         System.out.println(alu);
 
@@ -159,7 +159,7 @@ public class ALUTest {
         int bInt = b.intValue();
 
         int expected = aInt ^ bInt;
-        alu.setOperation(ALUOperation.XOR);
+        alu.setControl(ALU.convertControl(ALUOperation.XOR, false));
 
         System.out.println(alu);
 
