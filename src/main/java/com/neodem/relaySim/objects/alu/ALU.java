@@ -12,27 +12,28 @@ import java.util.function.BiFunction;
 public class ALU implements Component {
 
     private BitField out = new BitField4();
-    private BitField inA;
-    private BitField inB;
-    private ALUOperation op;
-    private boolean carryIn;
+    private BitField inA = new BitField4();
+    private BitField inB = new BitField4();
+    private ALUOperation op = ALUOperation.ADD;
+    private boolean carryIn = false;
     private boolean carryOut = false;
 
-    public void setOperation(ALUOperation op) {
-        this.op = op;
-
+    private void compute() {
         switch (op) {
             case ADD:
                 carryOut = doAddition(inA, inB, carryIn);
                 break;
             case OR:
                 process(inA, inB, ALU::or);
+                carryOut = false;
                 break;
             case AND:
                 process(inA, inB, ALU::and);
+                carryOut = false;
                 break;
             case XOR:
                 process(inA, inB, ALU::xor);
+                carryOut = false;
                 break;
         }
     }
@@ -110,16 +111,24 @@ public class ALU implements Component {
         return b.toString();
     }
 
+    public void setOperation(ALUOperation op) {
+        this.op = op;
+        compute();
+    }
+
     public void setInA(BitField inA) {
         this.inA = inA;
+        compute();
     }
 
     public void setInB(BitField inB) {
         this.inB = inB;
+        compute();
     }
 
     public void setCarryIn(boolean carryIn) {
         this.carryIn = carryIn;
+        compute();
     }
 
     public BitField getOut() {
