@@ -1,7 +1,8 @@
 package com.neodem.relaySim.objects.bus;
 
 /**
- * Created by vfumo on 3/27/16.
+ * Created by Vincent Fumo (neodem@gmail.com)
+ * Created on 3/27/16
  */
 public interface BusNames {
     String ALU_AIN = "ALU_AIN";

@@ -8,7 +8,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Created by vfumo on 3/27/16.
+ * Created by Vincent Fumo (neodem@gmail.com)
+ * Created on 3/27/16
  */
 public class Bus implements Changer {
     private BitField data;

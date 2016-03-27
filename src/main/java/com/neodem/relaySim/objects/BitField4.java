@@ -1,8 +1,8 @@
 package com.neodem.relaySim.objects;
 
 /**
- * Created by : Vincent Fumo (vincent_fumo@cable.comcast.com)
- * Created on : 3/25/16
+ * Created by Vincent Fumo (neodem@gmail.com)
+ * Created on : 3/13/16
  */
 public class BitField4 extends BitField {
     public BitField4() {

@@ -3,7 +3,7 @@ package com.neodem.relaySim.objects.register;
 import com.neodem.relaySim.objects.BitField;
 
 /**
- * Created by : Vincent Fumo (vincent_fumo@cable.comcast.com)
+ * Created by : Vincent Fumo (neodem@gmail.com)
  * Created on : 3/25/16
  */
 public class Register {

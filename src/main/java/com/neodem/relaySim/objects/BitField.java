@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by vfumo on 3/13/16.
+ * Created by Vincent Fumo (neodem@gmail.com)
+ * Created on 3/13/16
  */
 public class BitField {
 

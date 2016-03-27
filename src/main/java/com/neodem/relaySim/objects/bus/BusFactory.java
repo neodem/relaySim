@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by vfumo on 3/27/16.
+ * Created by Vincent Fumo (neodem@gmail.com)
+ * Created on 3/27/16
  */
 public class BusFactory {
     private Map<String, Bus> busses = new HashMap<>();
