@@ -18,6 +18,7 @@ public class BitField4 extends BitField {
      * set from 0-15, more than that will set it to 15
      *
      * @param val
+     * @todo move into the parent with appropriate 2^size overflow protection
      */
     public void set(int val) {
         if (val > 15) val = 15;

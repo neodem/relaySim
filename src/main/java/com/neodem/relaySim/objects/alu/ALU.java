@@ -2,7 +2,6 @@ package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
 import com.neodem.relaySim.objects.BitField4;
-import com.neodem.relaySim.objects.Component;
 
 import java.util.function.BiFunction;
 
@@ -15,7 +14,7 @@ import java.util.function.BiFunction;
  * <p>
  * Created by vfumo on 3/13/16.
  */
-public class ALU implements Component {
+public class ALU {
 
     private BitField out;
     private BitField inA;
