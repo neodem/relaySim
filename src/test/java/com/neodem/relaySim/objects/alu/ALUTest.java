@@ -2,6 +2,9 @@ package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
 import com.neodem.relaySim.objects.BitField4;
+import com.neodem.relaySim.objects.bus.Bus;
+import com.neodem.relaySim.objects.bus.BusFactory;
+import com.neodem.relaySim.objects.bus.BusNames;
 import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -19,16 +22,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ALUTest {
 
     private ALU alu;
+    private BusFactory busFactory;
 
     @BeforeMethod
     public void before() {
-        alu = new ALU();
+        busFactory = new BusFactory();
+        alu = new ALU(busFactory);
     }
 
     @AfterMethod
     public void after() {
         alu = null;
+        busFactory = null;
     }
+
+    @Test
+    public void something() throws Exception {
+        Bus aluAin = busFactory.getBus(BusNames.ALU_AIN, 4);
+        Bus aluBin = busFactory.getBus(BusNames.ALU_BIN, 4);
+        Bus aluControl = busFactory.getBus(BusNames.ALU_CTRL, 4);
+        Bus aluOut = busFactory.getBus(BusNames.ALU_OUT, 4);
+
+        BitField ain = new BitField4(0, 1, 1, 1);
+        aluAin.updateData(ain);
+
+        BitField bin = new BitField4(0, 0, 0, 1);
+        aluBin.updateData(bin);
+
+        BitField result = aluOut.getData();
+
+    }
+
 
     @Test
     public void orShouldWorkAsExpected() throws Exception {

@@ -2,6 +2,11 @@ package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
 import com.neodem.relaySim.objects.BitField4;
+import com.neodem.relaySim.objects.Changer;
+import com.neodem.relaySim.objects.Listener;
+import com.neodem.relaySim.objects.bus.Bus;
+import com.neodem.relaySim.objects.bus.BusFactory;
+import com.neodem.relaySim.objects.bus.BusNames;
 
 import java.util.function.BiFunction;
 
@@ -14,28 +19,73 @@ import java.util.function.BiFunction;
  * <p>
  * Created by vfumo on 3/13/16.
  */
-public class ALU {
+public class ALU implements Listener {
 
+    private BusFactory busFactory;
+
+    private Bus aluAin;
+    private Bus aluBin;
+    private Bus aluControl;
+
+    private Bus aluOut;
+
+
+    // internal
     private BitField out;
     private BitField inA;
     private BitField inB;
     private BitField control;
     private boolean carryIn;
     private boolean carryOut;
-
-    // internal
     private ALUOperation op = ALUOperation.ADD;
     private boolean bInv = false;
     private BitField actaulB = new BitField4();
 
-    public ALU() {
+    public ALU(BusFactory busFactory) {
         out = new BitField4();
         inA = new BitField4();
         inB = new BitField4();
         control = new BitField4();
         carryIn = false;
         carryOut = false;
+
+        this.busFactory = busFactory;
+
+        aluAin = this.busFactory.getBus(BusNames.ALU_AIN, 4);
+        aluAin.addListener(this);
+
+        aluBin = this.busFactory.getBus(BusNames.ALU_BIN, 4);
+        aluBin.addListener(this);
+
+        aluControl = this.busFactory.getBus(BusNames.ALU_CTRL, 4);
+        aluControl.addListener(this);
+
+        aluOut = this.busFactory.getBus(BusNames.ALU_OUT, 4);
+        aluOut.addListener(this);
+
         compute();
+    }
+
+    @Override
+    public void changed(Changer c) {
+        BitField bitField = c.getData();
+
+        boolean changed = false;
+        if (c.equals(aluAin)) {
+            setInA(bitField);
+            changed = true;
+        } else if (c.equals(aluBin)) {
+            setInB(bitField);
+            changed = true;
+        } else if (c.equals(aluControl)) {
+            setControl(bitField);
+            changed = true;
+        }
+
+        if(changed) {
+            BitField out = getOut();
+            aluOut.updateData(out);
+        }
     }
 
     protected static Boolean or(Boolean a, Boolean b) {
@@ -171,46 +221,46 @@ public class ALU {
         return b.toString();
     }
 
-    public BitField getOut() {
+    protected BitField getOut() {
         return out;
     }
 
-    public boolean getCarryOut() {
+    protected boolean getCarryOut() {
         return carryOut;
     }
 
-    public BitField getInA() {
+    protected BitField getInA() {
         return inA;
     }
 
-    public void setInA(BitField inA) {
+    protected void setInA(BitField inA) {
         this.inA = inA;
         compute();
     }
 
-    public BitField getInB() {
+    protected BitField getInB() {
         return inB;
     }
 
-    public void setInB(BitField inB) {
+    protected void setInB(BitField inB) {
         this.inB = inB;
         compute();
     }
 
-    public boolean getCarryIn() {
+    protected boolean getCarryIn() {
         return carryIn;
     }
 
-    public void setCarryIn(boolean carryIn) {
+    protected void setCarryIn(boolean carryIn) {
         this.carryIn = carryIn;
         compute();
     }
 
-    public BitField getControl() {
+    protected BitField getControl() {
         return control;
     }
 
-    public void setControl(BitField control) {
+    protected void setControl(BitField control) {
         this.control = control;
         compute();
     }
