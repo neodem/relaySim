@@ -38,18 +38,18 @@ public class ALUTest {
 
     @Test
     public void something() throws Exception {
-        Bus aluAin = busFactory.getBus(BusNames.ALU_AIN, 4);
-        Bus aluBin = busFactory.getBus(BusNames.ALU_BIN, 4);
-        Bus aluControl = busFactory.getBus(BusNames.ALU_CTRL, 4);
-        Bus aluOut = busFactory.getBus(BusNames.ALU_OUT, 4);
+        Bus aluAinBus = busFactory.getBus(BusNames.ALU_AIN, 4);
+        Bus aluBinBus = busFactory.getBus(BusNames.ALU_BIN, 4);
+        Bus aluControlBus = busFactory.getBus(BusNames.ALU_CTRL, 4);
+        Bus aluOutBus = busFactory.getBus(BusNames.ALU_OUT, 4);
 
         BitField ain = new BitField4(0, 1, 1, 1);
-        aluAin.updateData(ain);
+        aluAinBus.updateData(ain);
 
         BitField bin = new BitField4(0, 0, 0, 1);
-        aluBin.updateData(bin);
+        aluBinBus.updateData(bin);
 
-        BitField result = aluOut.getData();
+        BitField result = aluOutBus.getData();
 
     }
 
@@ -105,16 +105,16 @@ public class ALUTest {
     }
 
     @Test(dataProvider = "all4bits")
-    public void doAdditionShoudAddWithNoCarry(BitField4 a, BitField b) {
+    public void doAdditionShoudAddWithNoCarry(BitField a, BitField b) {
         alu.setInA(a);
         alu.setInB(b);
-        alu.setCarryIn(false);
 
         int aInt = a.intValue();
         int bInt = b.intValue();
         int expected = aInt + bInt;
 
-        alu.setControl(ALU.convertControl(ALUOperation.ADD, false));
+        alu.setControl(ALU.convertControl(ALUOperation.ADD, false, false));
+        alu.compute();
 
         System.out.println(alu);
 
@@ -128,16 +128,16 @@ public class ALUTest {
     }
 
     @Test(dataProvider = "all4bits")
-    public void orShoudWork(BitField4 a, BitField b) {
+    public void orShoudWork(BitField a, BitField b) {
         alu.setInA(a);
         alu.setInB(b);
-        alu.setCarryIn(false);
 
         int aInt = a.intValue();
         int bInt = b.intValue();
 
         int expected = aInt | bInt;
-        alu.setControl(ALU.convertControl(ALUOperation.OR, false));
+        alu.setControl(ALU.convertControl(ALUOperation.OR, false, false));
+        alu.compute();
 
         System.out.println(alu);
 
@@ -154,13 +154,13 @@ public class ALUTest {
     public void andShoudWork(BitField4 a, BitField b) {
         alu.setInA(a);
         alu.setInB(b);
-        alu.setCarryIn(false);
 
         int aInt = a.intValue();
         int bInt = b.intValue();
 
         int expected = aInt & bInt;
-        alu.setControl(ALU.convertControl(ALUOperation.AND, false));
+        alu.setControl(ALU.convertControl(ALUOperation.AND, false, false));
+        alu.compute();
 
         System.out.println(alu);
 
@@ -177,13 +177,13 @@ public class ALUTest {
     public void xorShoudWork(BitField4 a, BitField b) {
         alu.setInA(a);
         alu.setInB(b);
-        alu.setCarryIn(false);
 
         int aInt = a.intValue();
         int bInt = b.intValue();
 
         int expected = aInt ^ bInt;
-        alu.setControl(ALU.convertControl(ALUOperation.XOR, false));
+        alu.setControl(ALU.convertControl(ALUOperation.XOR, false, false));
+        alu.compute();
 
         System.out.println(alu);
 

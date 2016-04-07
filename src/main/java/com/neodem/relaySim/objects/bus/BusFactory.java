@@ -10,6 +10,14 @@ import java.util.Map;
 public class BusFactory {
     private Map<String, Bus> busses = new HashMap<>();
 
+    /**
+     * if bus exists, return it, else make one of size 'size' and
+     * store and return it
+     *
+     * @param id
+     * @param size
+     * @return
+     */
     public Bus getBus(String id, int size) {
         Bus bus = busses.get(id);
         if(bus == null) {

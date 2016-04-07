@@ -15,20 +15,17 @@ import java.util.function.BiFunction;
  * bit0 : s0
  * bit1 : s1
  * bit2 : bInv
- * bit3 : unused
+ * bit3 : carryIn
  * <p>
  * Created by vfumo on 3/13/16.
  */
 public class ALU implements Listener {
 
     private BusFactory busFactory;
-
     private Bus aluAin;
     private Bus aluBin;
     private Bus aluControl;
-
     private Bus aluOut;
-
 
     // internal
     private BitField out;
@@ -42,7 +39,7 @@ public class ALU implements Listener {
     private BitField actaulB = new BitField4();
 
     public ALU(BusFactory busFactory) {
-        out = new BitField4();
+        out = new BitField(5);
         inA = new BitField4();
         inB = new BitField4();
         control = new BitField4();
@@ -60,7 +57,7 @@ public class ALU implements Listener {
         aluControl = this.busFactory.getBus(BusNames.ALU_CTRL, 4);
         aluControl.addListener(this);
 
-        aluOut = this.busFactory.getBus(BusNames.ALU_OUT, 4);
+        aluOut = this.busFactory.getBus(BusNames.ALU_OUT, 5);
         aluOut.addListener(this);
 
         compute();
@@ -72,47 +69,24 @@ public class ALU implements Listener {
 
         boolean changed = false;
         if (c.equals(aluAin)) {
-            setInA(bitField);
+            this.inA = bitField;
             changed = true;
         } else if (c.equals(aluBin)) {
-            setInB(bitField);
+            this.inB = bitField;
             changed = true;
         } else if (c.equals(aluControl)) {
-            setControl(bitField);
+            this.control = bitField;
             changed = true;
         }
 
         if(changed) {
+            compute();
             BitField out = getOut();
             aluOut.updateData(out);
         }
     }
 
-    protected static Boolean or(Boolean a, Boolean b) {
-        return a || b;
-    }
-
-    protected static Boolean and(Boolean a, Boolean b) {
-        return a && b;
-    }
-
-    protected static Boolean xor(Boolean a, Boolean b) {
-        if (a || b) return !(a && b);
-        return false;
-    }
-
-    protected static boolean add(boolean a, boolean b, boolean carry) {
-        boolean result = xor(a, b);
-        if (carry) return !result;
-        return result;
-    }
-
-    protected static boolean carry(boolean a, boolean b, boolean carry) {
-        if (carry) return (a || b);
-        return (a && b);
-    }
-
-    private void compute() {
+    protected void compute() {
         validate();
         parseOperation();
 
@@ -138,30 +112,6 @@ public class ALU implements Listener {
                 carryOut = false;
                 break;
         }
-    }
-
-    private void parseOperation() {
-        int intValue = control.getLSB(2).intValue();
-        switch (intValue) {
-            case 0:
-                //00
-                op = ALUOperation.ADD;
-                break;
-            case 1:
-                //01
-                op = ALUOperation.OR;
-                break;
-            case 2:
-                //10
-                op = ALUOperation.AND;
-                break;
-            case 3:
-                //11
-                op = ALUOperation.XOR;
-                break;
-        }
-
-        bInv =  control.getBit(3);
     }
 
     private void validate() {
@@ -196,6 +146,95 @@ public class ALU implements Listener {
         }
     }
 
+    protected static Boolean or(Boolean a, Boolean b) {
+        return a || b;
+    }
+
+    protected static Boolean and(Boolean a, Boolean b) {
+        return a && b;
+    }
+
+    protected static Boolean xor(Boolean a, Boolean b) {
+        if (a || b) return !(a && b);
+        return false;
+    }
+
+    protected static boolean add(boolean a, boolean b, boolean carry) {
+        boolean result = xor(a, b);
+        if (carry) return !result;
+        return result;
+    }
+
+    protected static boolean carry(boolean a, boolean b, boolean carry) {
+        if (carry) return (a || b);
+        return (a && b);
+    }
+
+    private void parseOperation() {
+        int intValue = control.getLSB(2).intValue();
+        switch (intValue) {
+            case 0:
+                //00
+                op = ALUOperation.ADD;
+                break;
+            case 1:
+                //01
+                op = ALUOperation.OR;
+                break;
+            case 2:
+                //10
+                op = ALUOperation.AND;
+                break;
+            case 3:
+                //11
+                op = ALUOperation.XOR;
+                break;
+        }
+
+        bInv =  control.getBit(2);
+        carryIn = control.getBit(3);
+    }
+
+    /**
+     * helper to generate a control bitfield.
+     *
+     * bit 0,1 are the operation : 00 == ADD, 01 == OR, 10 == AND, 11 == XOR
+     * bit 2 is bInvert
+     * bit 3 is carryIn
+     *
+     * @param op the desired operation
+     * @param bInv the bInvert value
+     * @param carryIn the carryIn value
+     * @return a properly formatted control bitfield
+     */
+    public static BitField convertControl(ALUOperation op, boolean bInv, boolean carryIn) {
+        BitField controlSignal = new BitField4();
+
+        switch (op) {
+            case ADD:
+                // 00
+                break;
+            case OR:
+                //01
+               controlSignal.setBit(0, true);
+                break;
+            case AND:
+                //10
+                controlSignal.setBit(1, true);
+                break;
+            case XOR:
+                //11
+                controlSignal.setBit(0, true);
+                controlSignal.setBit(1, true);
+                break;
+        }
+
+        controlSignal.setBit(2, bInv);
+        controlSignal.setBit(3, carryIn);
+
+        return controlSignal;
+    }
+
     public String toString() {
         StringBuffer b = new StringBuffer();
 
@@ -221,74 +260,20 @@ public class ALU implements Listener {
         return b.toString();
     }
 
+    // accessors for test purposes
     protected BitField getOut() {
         return out;
     }
-
     protected boolean getCarryOut() {
         return carryOut;
     }
-
-    protected BitField getInA() {
-        return inA;
-    }
-
     protected void setInA(BitField inA) {
         this.inA = inA;
-        compute();
     }
-
-    protected BitField getInB() {
-        return inB;
-    }
-
     protected void setInB(BitField inB) {
         this.inB = inB;
-        compute();
     }
-
-    protected boolean getCarryIn() {
-        return carryIn;
-    }
-
-    protected void setCarryIn(boolean carryIn) {
-        this.carryIn = carryIn;
-        compute();
-    }
-
-    protected BitField getControl() {
-        return control;
-    }
-
     protected void setControl(BitField control) {
         this.control = control;
-        compute();
-    }
-
-    public static BitField convertControl(ALUOperation op, boolean bInv) {
-        BitField controlSignal = new BitField4();
-
-        switch (op) {
-            case ADD:
-                // 00
-                break;
-            case OR:
-                //01
-               controlSignal.setBit(0, true);
-                break;
-            case AND:
-                //10
-                controlSignal.setBit(1, true);
-                break;
-            case XOR:
-                //11
-                controlSignal.setBit(0, true);
-                controlSignal.setBit(1, true);
-                break;
-        }
-
-        controlSignal.setBit(3, bInv);
-
-        return controlSignal;
     }
 }
