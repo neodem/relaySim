@@ -1,27 +1,27 @@
 package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
-import com.neodem.relaySim.objects.BitField4;
 import com.neodem.relaySim.objects.Changer;
 import com.neodem.relaySim.objects.Listener;
 import com.neodem.relaySim.objects.bus.Bus;
-import com.neodem.relaySim.objects.bus.BusFactory;
+import com.neodem.relaySim.objects.bus.BusRegistry;
 import com.neodem.relaySim.objects.bus.BusNames;
 
 import java.util.function.BiFunction;
 
 /**
  * control :
- * bit0 : s0
- * bit1 : s1
- * bit2 : bInv
- * bit3 : carryIn
+ * bit3 : s0
+ * bit2 : s1
+ * bit1 : bInv
+ * bit0 : carryIn
+ *
  * <p>
  * Created by vfumo on 3/13/16.
  */
 public class ALU implements Listener {
 
-    private BusFactory busFactory;
+    private BusRegistry busRegistry;
     private Bus aluAin;
     private Bus aluBin;
     private Bus aluControl;
@@ -31,33 +31,36 @@ public class ALU implements Listener {
     private BitField out;
     private BitField inA;
     private BitField inB;
+    private BitField actaulB;
     private BitField control;
     private boolean carryIn;
     private boolean carryOut;
-    private ALUOperation op = ALUOperation.ADD;
-    private boolean bInv = false;
-    private BitField actaulB = new BitField4();
+    private ALUOperation op;
+    private boolean bInv;
 
-    public ALU(BusFactory busFactory) {
-        out = new BitField(5);
-        inA = new BitField4();
-        inB = new BitField4();
-        control = new BitField4();
+    public ALU(BusRegistry busRegistry, int size) {
+        out = new BitField(size + 1);
+        inA = new BitField(size);
+        inB = new BitField(size);
+        control = new BitField(4);
         carryIn = false;
         carryOut = false;
+        op = ALUOperation.ADD;
+        bInv = false;
+        actaulB = new BitField(inB);
 
-        this.busFactory = busFactory;
+        this.busRegistry = busRegistry;
 
-        aluAin = this.busFactory.getBus(BusNames.ALU_AIN, 4);
+        aluAin = this.busRegistry.getBus(BusNames.ALU_AIN, 4);
         aluAin.addListener(this);
 
-        aluBin = this.busFactory.getBus(BusNames.ALU_BIN, 4);
+        aluBin = this.busRegistry.getBus(BusNames.ALU_BIN, 4);
         aluBin.addListener(this);
 
-        aluControl = this.busFactory.getBus(BusNames.ALU_CTRL, 4);
+        aluControl = this.busRegistry.getBus(BusNames.ALU_CTRL, 4);
         aluControl.addListener(this);
 
-        aluOut = this.busFactory.getBus(BusNames.ALU_OUT, 5);
+        aluOut = this.busRegistry.getBus(BusNames.ALU_OUT, 5);
         aluOut.addListener(this);
 
         compute();
@@ -128,8 +131,8 @@ public class ALU implements Listener {
      */
     protected boolean doAddition(BitField a, BitField b, boolean carry) {
         for (int i = 0; i < a.getSize(); i++) {
-            boolean bitA = a.getBit(i);
-            boolean bitB = b.getBit(i);
+            boolean bitA = a.getBitAsBoolean(i);
+            boolean bitB = b.getBitAsBoolean(i);
             boolean result = add(bitA, bitB, carry);
             carry = carry(bitA, bitB, carry);
             out.setBit(i, result);
@@ -139,8 +142,8 @@ public class ALU implements Listener {
 
     protected void process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
         for (int i = 0; i < a.getSize(); i++) {
-            boolean bitA = a.getBit(i);
-            boolean bitB = b.getBit(i);
+            boolean bitA = a.getBitAsBoolean(i);
+            boolean bitB = b.getBitAsBoolean(i);
 
             out.setBit(i, function.apply(bitA, bitB));
         }
@@ -171,7 +174,7 @@ public class ALU implements Listener {
     }
 
     private void parseOperation() {
-        int intValue = control.getLSB(2).intValue();
+        int intValue = control.getMSB(2).intValue();
         switch (intValue) {
             case 0:
                 //00
@@ -191,16 +194,16 @@ public class ALU implements Listener {
                 break;
         }
 
-        bInv =  control.getBit(2);
-        carryIn = control.getBit(3);
+        bInv =  control.getBitAsBoolean(1);
+        carryIn = control.getBitAsBoolean(0);
     }
 
     /**
      * helper to generate a control bitfield.
      *
-     * bit 0,1 are the operation : 00 == ADD, 01 == OR, 10 == AND, 11 == XOR
-     * bit 2 is bInvert
-     * bit 3 is carryIn
+     * bit 3,2 are the operation : 00 == ADD, 01 == OR, 10 == AND, 11 == XOR
+     * bit 1 is bInvert
+     * bit 0 is carryIn
      *
      * @param op the desired operation
      * @param bInv the bInvert value
@@ -208,7 +211,7 @@ public class ALU implements Listener {
      * @return a properly formatted control bitfield
      */
     public static BitField convertControl(ALUOperation op, boolean bInv, boolean carryIn) {
-        BitField controlSignal = new BitField4();
+        BitField controlSignal = new BitField(4);
 
         switch (op) {
             case ADD:
@@ -216,21 +219,21 @@ public class ALU implements Listener {
                 break;
             case OR:
                 //01
-               controlSignal.setBit(0, true);
+               controlSignal.setBit(2, true);
                 break;
             case AND:
                 //10
-                controlSignal.setBit(1, true);
+                controlSignal.setBit(3, true);
                 break;
             case XOR:
                 //11
-                controlSignal.setBit(0, true);
-                controlSignal.setBit(1, true);
+                controlSignal.setBit(2, true);
+                controlSignal.setBit(3, true);
                 break;
         }
 
-        controlSignal.setBit(2, bInv);
-        controlSignal.setBit(3, carryIn);
+        controlSignal.setBit(1, bInv);
+        controlSignal.setBit(0, carryIn);
 
         return controlSignal;
     }

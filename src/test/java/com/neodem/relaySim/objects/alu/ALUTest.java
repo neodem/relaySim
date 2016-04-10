@@ -1,10 +1,9 @@
 package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
-import com.neodem.relaySim.objects.BitField4;
 import com.neodem.relaySim.objects.bus.Bus;
-import com.neodem.relaySim.objects.bus.BusFactory;
 import com.neodem.relaySim.objects.bus.BusNames;
+import com.neodem.relaySim.objects.bus.BusRegistry;
 import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -22,37 +21,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ALUTest {
 
     private ALU alu;
-    private BusFactory busFactory;
+    private BusRegistry busRegistry;
+
+    private Bus aluAinBus;
+    private Bus aluBinBus;
+    private Bus aluControlBus;
+    private Bus aluOutBus;
 
     @BeforeMethod
     public void before() {
-        busFactory = new BusFactory();
-        alu = new ALU(busFactory);
+        busRegistry = new BusRegistry();
+        alu = new ALU(busRegistry,4);
+
+        aluAinBus = busRegistry.getBus(BusNames.ALU_AIN, 4);
+        aluBinBus = busRegistry.getBus(BusNames.ALU_BIN, 4);
+        aluControlBus = busRegistry.getBus(BusNames.ALU_CTRL, 4);
+        aluOutBus = busRegistry.getBus(BusNames.ALU_OUT, 4);
     }
 
     @AfterMethod
     public void after() {
         alu = null;
-        busFactory = null;
+        busRegistry = null;
+        aluAinBus = null;
+        aluBinBus = null;
+        aluControlBus = null;
+        aluOutBus = null;
     }
 
     @Test
-    public void something() throws Exception {
-        Bus aluAinBus = busFactory.getBus(BusNames.ALU_AIN, 4);
-        Bus aluBinBus = busFactory.getBus(BusNames.ALU_BIN, 4);
-        Bus aluControlBus = busFactory.getBus(BusNames.ALU_CTRL, 4);
-        Bus aluOutBus = busFactory.getBus(BusNames.ALU_OUT, 4);
-
-        BitField ain = new BitField4(0, 1, 1, 1);
-        aluAinBus.updateData(ain);
-
-        BitField bin = new BitField4(0, 0, 0, 1);
-        aluBinBus.updateData(bin);
+    public void anAddShouldWorkUsingBusses() throws Exception {
+        // add, !bInv, !carryIn
+        aluControlBus.updateData(new BitField(4).set(0, 0, 0, 0));
+        aluAinBus.updateData(new BitField(4).set(0, 1, 1, 1));
+        aluBinBus.updateData(new BitField(4).set(0, 0, 0, 1));
 
         BitField result = aluOutBus.getData();
+        assertThat(result).isEqualTo(new BitField(5).set(0, 1, 0, 0, 0));
 
+        // add, !bInv, carryIn
+        aluControlBus.updateData(new BitField(4).set(0, 0, 0, 1));
     }
-
 
     @Test
     public void orShouldWorkAsExpected() throws Exception {
@@ -120,10 +129,10 @@ public class ALUTest {
 
         BitField out = alu.getOut();
 
-        assertThat(out.getBit(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBit(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBit(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
         assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
@@ -143,15 +152,15 @@ public class ALUTest {
 
         BitField out = alu.getOut();
 
-        assertThat(out.getBit(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBit(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBit(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
         assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
     @Test(dataProvider = "all4bits")
-    public void andShoudWork(BitField4 a, BitField b) {
+    public void andShoudWork(BitField a, BitField b) {
         alu.setInA(a);
         alu.setInB(b);
 
@@ -166,15 +175,15 @@ public class ALUTest {
 
         BitField out = alu.getOut();
 
-        assertThat(out.getBit(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBit(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBit(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
         assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
     @Test(dataProvider = "all4bits")
-    public void xorShoudWork(BitField4 a, BitField b) {
+    public void xorShoudWork(BitField a, BitField b) {
         alu.setInA(a);
         alu.setInB(b);
 
@@ -189,10 +198,10 @@ public class ALUTest {
 
         BitField out = alu.getOut();
 
-        assertThat(out.getBit(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBit(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBit(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBit(3)).isEqualTo(BitTools.bit(3, expected));
+        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
+        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
+        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
+        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
         assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
     }
 
@@ -203,11 +212,11 @@ public class ALUTest {
 
         for (int a = 0; a < 16; a++) {
             for (int b = 0; b < 16; b++) {
-                BitField aField = new BitField4();
+                BitField aField = new BitField(4);
                 aField.set(a);
                 aVals.add(aField);
 
-                BitField bField = new BitField4();
+                BitField bField = new BitField(4);
                 bField.set(b);
                 bVals.add(bField);
             }

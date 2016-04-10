@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * all BitField objects need a size of at least 1.
+ * indexing is from right to left:
+ * example : 0001, bit0 == 1
+ * <p>
  * Created by Vincent Fumo (neodem@gmail.com)
  * Created on 3/13/16
  */
@@ -17,58 +21,84 @@ public class BitField {
 
     /**
      * copy constructor
-     * @param bitField
+     *
+     * @param bitField the BitField to make a copy of
      */
     public BitField(BitField bitField) {
-        this.size = bitField.getSize();
-        this.data = new ArrayList<>(size);
+        this(bitField.getSize());
         for (int i = 0; i < size; i++) {
             setBit(i, bitField.getBit(i));
         }
     }
 
+    /**
+     * init a new BitField with a given size and set all values to 0
+     *
+     * @param size the size of the BitField
+     */
     public BitField(int size) {
+        if (size < 1) throw new IllegalArgumentException("BitField should have a size of at least 1");
         this.size = size;
         this.data = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            setBit(i, false);
+            this.data.add(false);
         }
+    }
+
+    /**
+     * set all values of the BitField with the rightmost value being index 0.
+     * example set(0,0,0,1) would set bit0 == 1
+     *
+     * @param values the values to set the BitField
+     * @return the BitField
+     */
+    public BitField set(int... values) {
+        if (values.length != size)
+            throw new IllegalArgumentException(String.format("size mismatch. You need to set %d bits", size));
+
+        for (int i = 0; i < values.length; i++) {
+            setBit(size - i - 1, values[i]);
+        }
+        return this;
     }
 
     /**
      * invert all the bits
      */
-    public void invert() {
+    public BitField invert() {
         for (int i = 0; i < size; i++) {
-            boolean newBit = !getBit(i);
+            boolean newBit = !getBitAsBoolean(i);
             setBit(i, newBit);
         }
+        return this;
     }
 
-    public void setBit(int pos, boolean val) {
+    public BitField setBit(int pos, boolean val) {
         if (pos >= size)
             throw new IllegalArgumentException(String.format("trying to set bit %d of a %d bit field", pos, size));
-        data.add(pos, val);
+        data.set(pos, val);
+        return this;
     }
 
-    public void setBit(int pos, int value) {
+    public BitField setBit(int pos, int value) {
         if (pos >= size)
             throw new IllegalArgumentException(String.format("trying to set bit %d of a %d bit field", pos, size));
         boolean val = true;
         if (value == 0) val = false;
-        data.add(pos, val);
+        data.set(pos, val);
+        return this;
     }
 
-    public boolean getBit(int pos) {
+    public boolean getBitAsBoolean(int pos) {
         if (pos >= size)
             throw new IllegalArgumentException(String.format("trying to get bit %d of a %d bit field", pos, size));
         return data.get(pos);
     }
 
-    public int getBitAsInt(int pos) {
+    public int getBit(int pos) {
         if (pos >= size)
             throw new IllegalArgumentException(String.format("trying to get bit %d of a %d bit field", pos, size));
-        boolean bit = getBit(pos);
+        boolean bit = getBitAsBoolean(pos);
         return bit ? 1 : 0;
     }
 
@@ -76,11 +106,18 @@ public class BitField {
         return BitTools.makeInt(data);
     }
 
-    public void set(int val) {
+    /**
+     * convert the given value into a BitField
+     *
+     * @param val
+     * @return
+     */
+    public BitField setValue(int val) {
         List<Integer> bits = BitTools.convertToList(val, size);
         for (int i = 0; i < size; i++) {
             setBit(i, bits.get(i));
         }
+        return this;
     }
 
     @Override
@@ -117,5 +154,23 @@ public class BitField {
         }
 
         return result;
+    }
+
+    public BitField getMSB(int digits) {
+        if (digits >= size)
+            throw new IllegalArgumentException("can't get more bits (" + digits + ") than the size (" + size + ") of the field!");
+
+        BitField result = new BitField(digits);
+
+        for (int i = 0; i < digits; i++) {
+            int j = size - digits + i;
+            result.setBit(i, getBit(j));
+        }
+
+        return result;
+    }
+
+    public int size() {
+        return size;
     }
 }
