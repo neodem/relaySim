@@ -2,6 +2,7 @@ package com.neodem.relaySim.objects.alu;
 
 import com.neodem.relaySim.objects.BitField;
 import com.neodem.relaySim.objects.Changer;
+import com.neodem.relaySim.objects.Component;
 import com.neodem.relaySim.objects.Listener;
 import com.neodem.relaySim.objects.bus.Bus;
 import org.slf4j.Logger;
@@ -23,11 +24,10 @@ import java.util.function.BiFunction;
  * <p>
  * Created by vfumo on 3/13/16.
  */
-public class ALU implements Listener {
+public class ALU extends Component implements Listener {
 
     private static Logger logger = LoggerFactory.getLogger(ALU.class);
 
-    private int size;
     private Bus aluAin;
     private Bus aluBin;
     private Bus aluControl;
@@ -39,8 +39,8 @@ public class ALU implements Listener {
     private BitField inB;
     private BitField control;
 
-    public ALU(int size) {
-        this.size = size;
+    public ALU(int size, String name) {
+        super(size, name);
         init();
     }
 

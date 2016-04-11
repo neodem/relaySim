@@ -25,12 +25,12 @@ public class ALUTest {
 
     @BeforeTest
     public void before() {
-        aluAinBus = new Bus(BusNames.ALU_AIN, 4);
-        aluBinBus = new Bus(BusNames.ALU_BIN, 4);
-        aluControlBus = new Bus(BusNames.ALU_CTRL, 4);
-        aluOutBus = new Bus(BusNames.ALU_OUT, 4);
+        aluAinBus = new Bus(4,BusNames.ALU_AIN);
+        aluBinBus = new Bus(4,BusNames.ALU_BIN);
+        aluControlBus = new Bus(4,BusNames.ALU_CTRL);
+        aluOutBus = new Bus(4,BusNames.ALU_OUT);
 
-        alu = new ALU(4);
+        alu = new ALU(4, "ALU");
         alu.setAluAin(aluAinBus);
         alu.setAluBin(aluBinBus);
         alu.setAluControl(aluControlBus);
