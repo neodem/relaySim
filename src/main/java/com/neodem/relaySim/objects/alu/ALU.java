@@ -4,8 +4,6 @@ import com.neodem.relaySim.objects.BitField;
 import com.neodem.relaySim.objects.Changer;
 import com.neodem.relaySim.objects.Listener;
 import com.neodem.relaySim.objects.bus.Bus;
-import com.neodem.relaySim.objects.bus.BusRegistry;
-import com.neodem.relaySim.objects.bus.BusNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +27,7 @@ public class ALU implements Listener {
 
     private static Logger logger = LoggerFactory.getLogger(ALU.class);
 
-    private BusRegistry busRegistry;
+    private int size;
     private Bus aluAin;
     private Bus aluBin;
     private Bus aluControl;
@@ -41,25 +39,16 @@ public class ALU implements Listener {
     private BitField inB;
     private BitField control;
 
-    public ALU(BusRegistry busRegistry, int size) {
+    public ALU(int size) {
+        this.size = size;
+        init();
+    }
+
+    public void init() {
         out = new BitField(size + 1);
         inA = new BitField(size);
         inB = new BitField(size);
         control = new BitField(4);
-
-        this.busRegistry = busRegistry;
-
-        aluAin = this.busRegistry.getBus(BusNames.ALU_AIN, size);
-        aluAin.addListener(this);
-
-        aluBin = this.busRegistry.getBus(BusNames.ALU_BIN, size);
-        aluBin.addListener(this);
-
-        aluControl = this.busRegistry.getBus(BusNames.ALU_CTRL, size);
-        aluControl.addListener(this);
-
-        aluOut = this.busRegistry.getBus(BusNames.ALU_OUT, size+1);
-        aluOut.addListener(this);
     }
 
     @Override
@@ -281,4 +270,27 @@ public class ALU implements Listener {
         return b.toString();
     }
 
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public void setAluAin(Bus aluAin) {
+        this.aluAin = aluAin;
+        this.aluAin.addListener(this);
+    }
+
+    public void setAluBin(Bus aluBin) {
+        this.aluBin = aluBin;
+        this.aluBin.addListener(this);
+    }
+
+    public void setAluControl(Bus aluControl) {
+        this.aluControl = aluControl;
+        this.aluControl.addListener(this);
+    }
+
+    public void setAluOut(Bus aluOut) {
+        this.aluOut = aluOut;
+        this.aluOut.addListener(this);
+    }
 }

@@ -3,6 +3,7 @@ package com.neodem.relaySim.objects.bus;
 import com.neodem.relaySim.objects.BitField;
 import com.neodem.relaySim.objects.Changer;
 import com.neodem.relaySim.objects.Listener;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,9 +14,21 @@ import java.util.HashSet;
  */
 public class Bus implements Changer {
     private BitField data;
+    private String name;
+
     private Collection<Listener> listeners;
 
-    public Bus(int size) {
+    private int size;
+    public Bus() {
+    }
+
+    public Bus(String name, int size) {
+        this.size = size;
+        this.name = name;
+        init();
+    }
+
+    public void init() {
         data = new BitField(size);
     }
 
@@ -37,5 +50,14 @@ public class Bus implements Changer {
         for (Listener c : listeners) {
             c.changed(this);
         }
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Required
+    public void setSize(int size) {
+        this.size = size;
     }
 }
