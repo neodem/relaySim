@@ -5,10 +5,7 @@ import com.neodem.relaySim.objects.bus.Bus;
 import com.neodem.relaySim.objects.bus.BusNames;
 import com.neodem.relaySim.objects.bus.BusRegistry;
 import com.neodem.relaySim.tools.BitTools;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +25,7 @@ public class ALUTest {
     private Bus aluControlBus;
     private Bus aluOutBus;
 
-    @BeforeMethod
+    @BeforeTest
     public void before() {
         busRegistry = new BusRegistry();
         alu = new ALU(busRegistry,4);
@@ -39,7 +36,7 @@ public class ALUTest {
         aluOutBus = busRegistry.getBus(BusNames.ALU_OUT, 4);
     }
 
-    @AfterMethod
+    @AfterTest
     public void after() {
         alu = null;
         busRegistry = null;
@@ -119,121 +116,84 @@ public class ALUTest {
     }
 
     @Test(dataProvider = "all4bits")
-    public void doAdditionShoudAddWithNoCarry(BitField a, BitField b) {
-        alu.setInA(a);
-        alu.setInB(b);
+    public void computeAddShouldWork(BitField a, BitField b) {
 
         int aInt = a.intValue();
         int bInt = b.intValue();
         int expected = aInt + bInt;
 
-        alu.setControl(ALU.convertControl(ALUOperation.ADD, false, false));
-        alu.compute();
+        BitField out = alu.compute(a, b, ALUOperation.ADD, false, false);
 
-        System.out.println(alu);
+        int result = out.intValue();
+        assertThat(result).isEqualTo(expected);
+    }
 
-        BitField out = alu.getOut();
+    @Test(dataProvider = "all4bits")
+    public void computeAddShouldWorkWithCarryIn(BitField a, BitField b) {
+        int aInt = a.intValue();
+        int bInt = b.intValue();
+        int expected = aInt + bInt + 1;
 
-        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
-        assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
+        BitField out = alu.compute(a, b, ALUOperation.ADD, false, true);
+
+        int result = out.intValue();
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test(dataProvider = "all4bits")
     public void orShoudWork(BitField a, BitField b) {
-        alu.setInA(a);
-        alu.setInB(b);
-
         int aInt = a.intValue();
         int bInt = b.intValue();
 
         int expected = aInt | bInt;
-        alu.setControl(ALU.convertControl(ALUOperation.OR, false, false));
-        alu.compute();
 
-        System.out.println(alu);
+        BitField out = alu.compute(a, b, ALUOperation.OR, false, false);
 
-        BitField out = alu.getOut();
-
-        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
-        assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
+        int result = out.intValue();
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test(dataProvider = "all4bits")
     public void andShoudWork(BitField a, BitField b) {
-        alu.setInA(a);
-        alu.setInB(b);
-
         int aInt = a.intValue();
         int bInt = b.intValue();
 
         int expected = aInt & bInt;
-        alu.setControl(ALU.convertControl(ALUOperation.AND, false, false));
-        alu.compute();
 
-        System.out.println(alu);
+        BitField out = alu.compute(a, b, ALUOperation.AND, false, false);
 
-        BitField out = alu.getOut();
-
-        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
-        assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
+        int result = out.intValue();
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test(dataProvider = "all4bits")
     public void xorShoudWork(BitField a, BitField b) {
-        alu.setInA(a);
-        alu.setInB(b);
-
         int aInt = a.intValue();
         int bInt = b.intValue();
 
         int expected = aInt ^ bInt;
-        alu.setControl(ALU.convertControl(ALUOperation.XOR, false, false));
-        alu.compute();
 
-        System.out.println(alu);
+        BitField out = alu.compute(a, b, ALUOperation.XOR, false, false);
 
-        BitField out = alu.getOut();
-
-        assertThat(out.getBitAsBoolean(0)).isEqualTo(BitTools.bit(0, expected));
-        assertThat(out.getBitAsBoolean(1)).isEqualTo(BitTools.bit(1, expected));
-        assertThat(out.getBitAsBoolean(2)).isEqualTo(BitTools.bit(2, expected));
-        assertThat(out.getBitAsBoolean(3)).isEqualTo(BitTools.bit(3, expected));
-        assertThat(alu.getCarryOut()).isEqualTo(BitTools.bit(4, expected));
+        int result = out.intValue();
+        assertThat(result).isEqualTo(expected);
     }
 
     @DataProvider(name = "all4bits")
     public Object[][] aluAdd() {
-        List<BitField> aVals = new ArrayList<>();
-        List<BitField> bVals = new ArrayList<>();
-
-        for (int a = 0; a < 16; a++) {
-            for (int b = 0; b < 16; b++) {
-                BitField aField = new BitField(4);
-                aField.setValue(a);
-                aVals.add(aField);
-
-                BitField bField = new BitField(4);
-                bField.setValue(b);
-                bVals.add(bField);
-            }
-        }
+        List<BitField> aVals = BitTools.makeListOfFields(4);
+        List<BitField> bVals = BitTools.makeListOfFields(4);
 
         Object[][] all = new Object[256][];
-        for (int i = 0; i < 256; i++) {
-            List<BitField> row = new ArrayList<>();
-            row.add(aVals.get(i));
-            row.add(bVals.get(i));
+        int index = 0;
+        for (int a = 0; a < 16; a++) {
+            for(int b = 0; b < 16; b++) {
+                List<BitField> row = new ArrayList<>();
+                row.add(aVals.get(a));
+                row.add(bVals.get(b));
 
-            all[i] = row.toArray(new Object[row.size()]);
+                all[index++] = row.toArray(new Object[row.size()]);
+            }
         }
 
         return all;

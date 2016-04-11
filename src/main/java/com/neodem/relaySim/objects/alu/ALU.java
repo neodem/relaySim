@@ -6,6 +6,8 @@ import com.neodem.relaySim.objects.Listener;
 import com.neodem.relaySim.objects.bus.Bus;
 import com.neodem.relaySim.objects.bus.BusRegistry;
 import com.neodem.relaySim.objects.bus.BusNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.BiFunction;
 
@@ -25,6 +27,8 @@ import java.util.function.BiFunction;
  */
 public class ALU implements Listener {
 
+    private static Logger logger = LoggerFactory.getLogger(ALU.class);
+
     private BusRegistry busRegistry;
     private Bus aluAin;
     private Bus aluBin;
@@ -35,39 +39,27 @@ public class ALU implements Listener {
     private BitField out;
     private BitField inA;
     private BitField inB;
-    private BitField actaulB;
     private BitField control;
-    private boolean carryIn;
-    private boolean carryOut;
-    private ALUOperation op;
-    private boolean bInv;
 
     public ALU(BusRegistry busRegistry, int size) {
         out = new BitField(size + 1);
         inA = new BitField(size);
         inB = new BitField(size);
         control = new BitField(4);
-        carryIn = false;
-        carryOut = false;
-        op = ALUOperation.ADD;
-        bInv = false;
-        actaulB = new BitField(inB);
 
         this.busRegistry = busRegistry;
 
-        aluAin = this.busRegistry.getBus(BusNames.ALU_AIN, 4);
+        aluAin = this.busRegistry.getBus(BusNames.ALU_AIN, size);
         aluAin.addListener(this);
 
-        aluBin = this.busRegistry.getBus(BusNames.ALU_BIN, 4);
+        aluBin = this.busRegistry.getBus(BusNames.ALU_BIN, size);
         aluBin.addListener(this);
 
-        aluControl = this.busRegistry.getBus(BusNames.ALU_CTRL, 4);
+        aluControl = this.busRegistry.getBus(BusNames.ALU_CTRL, size);
         aluControl.addListener(this);
 
-        aluOut = this.busRegistry.getBus(BusNames.ALU_OUT, 5);
+        aluOut = this.busRegistry.getBus(BusNames.ALU_OUT, size+1);
         aluOut.addListener(this);
-
-        compute();
     }
 
     @Override
@@ -76,32 +68,39 @@ public class ALU implements Listener {
 
         boolean changed = false;
         if (c.equals(aluAin)) {
+            logger.debug("AIn updated to : {}", bitField);
             this.inA = bitField;
             changed = true;
         } else if (c.equals(aluBin)) {
+            logger.debug("BIn updated to : {}", bitField);
             this.inB = bitField;
             changed = true;
         } else if (c.equals(aluControl)) {
+            logger.debug("Ctrl updated to : {}", bitField);
             this.control = bitField;
             changed = true;
         }
 
         if(changed) {
-            compute();
-            BitField out = getOut();
+            validate();
+
+            ALUOperation op = decodeOperation(control);
+            boolean bInv = decodeBInvert(control);
+            boolean carryIn = decodeCarryIn(control);
+
+            out = compute(inA, inB, op, bInv, carryIn);
             aluOut.updateData(out);
         }
     }
 
-    protected void compute() {
-        validate();
-        parseOperation();
+    protected BitField compute(BitField inA, BitField inB, ALUOperation op, boolean bInv, boolean carryIn) {
 
-        actaulB = new BitField(inB);
+        BitField actaulB = new BitField(inB);
         if(bInv) {
             actaulB.invert();
         }
 
+        boolean carryOut = false;
         switch (op) {
             case ADD:
                 carryOut = doAddition(inA, actaulB, carryIn);
@@ -121,6 +120,10 @@ public class ALU implements Listener {
         }
 
         out.setBit(4, carryOut);
+        if(logger.isDebugEnabled()) {
+            logger.debug("compute() " + getStateString(inA, inB, op, bInv, carryIn, out));
+        }
+        return out;
     }
 
     private void validate() {
@@ -179,7 +182,9 @@ public class ALU implements Listener {
         return (a && b);
     }
 
-    private void parseOperation() {
+    private ALUOperation decodeOperation(BitField control) {
+        ALUOperation op = null;
+
         int intValue = control.getMSB(2).intValue();
         switch (intValue) {
             case 0:
@@ -199,9 +204,14 @@ public class ALU implements Listener {
                 op = ALUOperation.XOR;
                 break;
         }
+        return op;
+    }
 
-        bInv =  control.getBitAsBoolean(1);
-        carryIn = control.getBitAsBoolean(0);
+    private boolean decodeBInvert(BitField control) {
+        return control.getBitAsBoolean(1);
+    }
+    private boolean decodeCarryIn(BitField control) {
+        return control.getBitAsBoolean(0);
     }
 
     /**
@@ -216,7 +226,7 @@ public class ALU implements Listener {
      * @param carryIn the carryIn value
      * @return a properly formatted control bitfield
      */
-    public static BitField convertControl(ALUOperation op, boolean bInv, boolean carryIn) {
+    public static BitField codeControlField(ALUOperation op, boolean bInv, boolean carryIn) {
         BitField controlSignal = new BitField(4);
 
         switch (op) {
@@ -245,44 +255,30 @@ public class ALU implements Listener {
     }
 
     public String toString() {
+        return getStateString(inA, inB, decodeOperation(control), decodeBInvert(control), decodeCarryIn(control), out);
+    }
+
+    private String getStateString(BitField inA, BitField inB, ALUOperation op, boolean bInv, boolean carryIn, BitField out) {
         StringBuffer b = new StringBuffer();
 
         b.append(op);
-        b.append(": ");
+        b.append(' ');
+        if(bInv) b.append('B');
+        else b.append(' ');
+        if(carryIn) b.append('C');
+        else b.append(' ');
 
-        if (carryIn) b.append("C");
-        else b.append(" ");
-
-        if (carryIn) b.append("B");
-        else b.append(" ");
-
+        b.append(' ');
         b.append("a=");
         b.append(inA);
         b.append(' ');
         b.append("b=");
-        b.append(actaulB);
+        b.append(inB);
         b.append(' ');
         b.append("o=");
         b.append(out);
-        if (carryOut) b.append(" carryOut");
 
         return b.toString();
     }
 
-    // accessors for test purposes
-    protected BitField getOut() {
-        return out;
-    }
-    protected boolean getCarryOut() {
-        return carryOut;
-    }
-    protected void setInA(BitField inA) {
-        this.inA = inA;
-    }
-    protected void setInB(BitField inB) {
-        this.inB = inB;
-    }
-    protected void setControl(BitField control) {
-        this.control = control;
-    }
 }

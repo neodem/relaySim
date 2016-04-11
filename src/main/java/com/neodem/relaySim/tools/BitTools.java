@@ -1,5 +1,7 @@
 package com.neodem.relaySim.tools;
 
+import com.neodem.relaySim.objects.BitField;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,30 @@ public class BitTools {
         int thebit = masked_n >> bitIndex;
 
         return thebit == 1;
+    }
+
+    /**
+     * make a consectutive list of BitField objects for all the possible values
+     *
+     * eg: 00, 01, 10, 11
+     *
+     * @param size size of the bitfield
+     * @return a consecutive list of BitField objects for all the possible values
+     */
+    public static List<BitField> makeListOfFields(int size) {
+
+        // the number of fields we will need
+        double number = Math.pow(2,size);
+
+        List<BitField> allFields = new ArrayList<>();
+
+        for(int i=0 ; i < number ; i++) {
+            BitField field = new BitField(size);
+            field.setValue(i);
+            allFields.add(field);
+        }
+
+        return allFields;
     }
 }
 
