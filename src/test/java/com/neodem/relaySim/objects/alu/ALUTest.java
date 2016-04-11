@@ -53,14 +53,19 @@ public class ALUTest {
     public void anAddShouldWorkUsingBusses() throws Exception {
         // add, !bInv, !carryIn
         aluControlBus.updateData(new BitField(4).set(0, 0, 0, 0));
-        aluAinBus.updateData(new BitField(4).set(0, 1, 1, 1));
-        aluBinBus.updateData(new BitField(4).set(0, 0, 0, 1));
+        aluAinBus.updateData(new BitField(4).set(0, 1, 1, 1)); // 7
+        aluBinBus.updateData(new BitField(4).set(0, 0, 0, 1)); // 1
 
-        BitField result = aluOutBus.getData();
-        assertThat(result).isEqualTo(new BitField(5).set(0, 1, 0, 0, 0));
+        assertThat(aluOutBus.getData()).isEqualTo(BitField.create(0, 1, 0, 0, 0)); //8
 
         // add, !bInv, carryIn
         aluControlBus.updateData(new BitField(4).set(0, 0, 0, 1));
+        assertThat(aluOutBus.getData()).isEqualTo(BitField.create(0, 1, 0, 0, 1)); //9
+
+        // add, bInv, carryIn
+        aluControlBus.updateData(new BitField(4).set(0, 0, 1, 0));
+        // bInv -> b == 1110 or 14
+        assertThat(aluOutBus.getData()).isEqualTo(BitField.create(1, 0, 1, 0, 1)); // 21 (treating carryOut as the 5th bit)
     }
 
     @Test
@@ -213,11 +218,11 @@ public class ALUTest {
         for (int a = 0; a < 16; a++) {
             for (int b = 0; b < 16; b++) {
                 BitField aField = new BitField(4);
-                aField.set(a);
+                aField.setValue(a);
                 aVals.add(aField);
 
                 BitField bField = new BitField(4);
-                bField.set(b);
+                bField.setValue(b);
                 bVals.add(bField);
             }
         }

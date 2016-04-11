@@ -81,4 +81,10 @@ public class BitFieldTest {
         assertThat(result.getBit(1)).isEqualTo(0);
         assertThat(result.getBit(2)).isEqualTo(1);
     }
+
+    @Test
+    public void bitfieldsEqualsShouldWork() throws Exception {
+        bitField.set(1,0,1,1);
+        assertThat(bitField).isEqualTo(BitField.create(1,0,1,1));
+    }
 }

@@ -1,6 +1,8 @@
 package com.neodem.relaySim.objects;
 
 import com.neodem.relaySim.tools.BitTools;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,12 @@ public class BitField {
         for (int i = 0; i < size; i++) {
             this.data.add(false);
         }
+    }
+
+    public static BitField create(int... values) {
+        BitField result = new BitField(values.length);
+        result.set(values);
+        return result;
     }
 
     /**
@@ -168,6 +176,28 @@ public class BitField {
         }
 
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BitField bitField = (BitField) o;
+
+        return new EqualsBuilder()
+                .append(size, bitField.size)
+                .append(data, bitField.data)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(271, 151)
+                .append(data)
+                .append(size)
+                .toHashCode();
     }
 
     public int size() {

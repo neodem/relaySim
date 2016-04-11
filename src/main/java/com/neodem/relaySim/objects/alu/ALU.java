@@ -16,6 +16,10 @@ import java.util.function.BiFunction;
  * bit1 : bInv
  * bit0 : carryIn
  *
+ * output
+ * bit4 : carryOut
+ * bit3-0 : data
+ *
  * <p>
  * Created by vfumo on 3/13/16.
  */
@@ -115,6 +119,8 @@ public class ALU implements Listener {
                 carryOut = false;
                 break;
         }
+
+        out.setBit(4, carryOut);
     }
 
     private void validate() {
