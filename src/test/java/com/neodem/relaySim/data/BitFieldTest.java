@@ -101,4 +101,10 @@ public class BitFieldTest {
         bitField.resize(10);
         assertThat(bitField).isEqualTo(BitField.create(0, 0, 0, 0, 1, 0, 1, 1, 1, 0));
     }
+
+    @Test
+    public void createFromInt() throws Exception {
+        BitField val = BitField.createFromInt(6);
+        assertThat(val).isEqualTo(BitField.create(1,1,0));
+    }
 }

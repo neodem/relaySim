@@ -24,7 +24,6 @@ public class Multiplexor extends Component implements BusListener {
 
     public Multiplexor(int size, String name) {
         super(size, name);
-        init();
     }
 
     public void init() {

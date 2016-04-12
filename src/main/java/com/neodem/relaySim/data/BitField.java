@@ -53,6 +53,29 @@ public class BitField {
         return result;
     }
 
+    public static BitField createFromInt(int value) {
+        String bitstring = Integer.toString(value, 2);
+        int size = bitstring.length();
+        BitField result = new BitField(size);
+        for(int i=0; i<size; i++) {
+            boolean val = bitstring.charAt(i) == '1';
+            result.setBit(size-i-1, val);
+        }
+        return result;
+    }
+
+    public static BitField createFromInt(int value, int fieldSize) {
+        String bitstring = Integer.toString(value, 2);
+        int size = bitstring.length();
+        BitField result = new BitField(size);
+        for(int i=0; i<size; i++) {
+            boolean val = bitstring.charAt(i) == '1';
+            result.setBit(size-i-1, val);
+        }
+
+        return result.resize(fieldSize);
+    }
+
     /**
      * set all values of the BitField with the rightmost value being index 0.
      * example set(0,0,0,1) would set bit0 == 1
@@ -210,7 +233,7 @@ public class BitField {
      *
      * @param newSize
      */
-    public void resize(int newSize) {
+    public BitField resize(int newSize) {
         if (newSize > size) {
             int bitsToAdd = newSize - size;
             for (int i = 0; i < bitsToAdd; i++) {
@@ -224,5 +247,7 @@ public class BitField {
             }
             this.size = newSize;
         }
+
+        return this;
     }
 }
