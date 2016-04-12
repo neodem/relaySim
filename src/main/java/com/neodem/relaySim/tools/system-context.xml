@@ -28,10 +28,17 @@
 
     <bean id="alu" class="com.neodem.relaySim.objects.alu.ALU" init-method="init">
         <property name="size" value="4"/>
+        <property name="name" value="ALU"/>
         <property name="aluAin" ref="aluABus"/>
         <property name="aluBin" ref="aluBBus"/>
         <property name="aluOut" ref="aluOutBus"/>
         <property name="aluControl" ref="aluControlBus"/>
+    </bean>
+
+    <bean id="aRegister" class="com.neodem.relaySim.objects.register.Register" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="Register-A"/>
+
     </bean>
 
 </beans>
