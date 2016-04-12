@@ -22,48 +22,37 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
     @Resource
     private ALU alu;
 
-    @Resource(name = "accumulatorInBus")
-    private Bus accumulatorBus;
-
-    @Resource(name = "aluControlBus")
-    private Bus aluControlBus;
-
-    @Resource(name = "aluABus")
-    private Bus aluAInBus;
-
-    @Resource(name = "aluBBus")
-    private Bus aluBInBus;
-
-    @Resource(name = "aluOutBus")
-    private Bus aluOutBus;
-
     @Resource
     private Register accumulator;
 
     @Test
     public void wiringTest() throws Exception {
-        // load 0,0,0,0 into A side of ALU (hijacking the data, which is normally connected only to the Accumulator)
-        aluAInBus.updateData(BitField.create(0,0,0,0));
+        Bus aluAin = alu.getAluAin();
+        Bus aluBin = alu.getAluBin();
+        Bus aluOut = alu.getAluOut();
+        Bus aluControl = alu.getAluControl();
 
-        // load 0,0,1,0 into B side of ALU
-        aluBInBus.updateData(BitField.create(0,0,1,0));
+        Bus accumulatorIn = accumulator.getInBus();
+        Bus accumulatorOut = accumulator.getOutBus();
+
+        // start state has everything at 0
+        assertThat(aluOut.getData().intValue()).isEqualTo(0);
+        assertThat(aluAin.getData().intValue()).isEqualTo(0);
+        assertThat(aluBin.getData().intValue()).isEqualTo(0);
+
+        assertThat(accumulatorIn.getData().intValue()).isEqualTo(0);
+        assertThat(accumulatorOut.getData().intValue()).isEqualTo(0);
 
         // set ALU operation to ADD with no carryIn
-        aluControlBus.updateData(BitField.create(0,0,0,0));
+        aluControl.updateData(BitField.create(0,0,0,0));
 
-        // check result (should be the same as B)
-        assertThat(aluOutBus.getData()).isEqualTo(BitField.create(0,0,0,1,0));
+        // load 1,0,0,1 into B side of ALU
+        aluBin.updateData(BitField.create(1,0,0,1));
 
-        // load 1,0,0,1 into the Accumulator
-        accumulatorBus.updateData(BitField.create(1, 0, 0, 1));
-
-        // check ALU out (should not change)
-        assertThat(aluOutBus.getData()).isEqualTo(BitField.create(0,0,0,1,0));
-
-        // trigger the store op of the Register
+        // store output of the ALU (which is wired into the accumulator)
         accumulator.store();
 
-        // check ALU out (should do the add)
-        assertThat(aluOutBus.getData()).isEqualTo(BitField.create(0,1,0,1,1));
+        // check ALU out (should have the new value/out from the ALU)
+        assertThat(accumulatorOut.getData()).isEqualTo(BitField.create(1,0,0,1));
     }
 }

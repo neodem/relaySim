@@ -39,4 +39,12 @@ public class Register extends Component implements BusListener {
         this.outBus = outBus;
         this.outBus.addListener(this);
     }
+
+    public Bus getInBus() {
+        return inBus;
+    }
+
+    public Bus getOutBus() {
+        return outBus;
+    }
 }

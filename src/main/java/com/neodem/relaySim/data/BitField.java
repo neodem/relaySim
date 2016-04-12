@@ -203,4 +203,26 @@ public class BitField {
     public int size() {
         return size;
     }
+
+    /**
+     * if newSize > currentSize, we pad with 0's on the left
+     * if newSize < currentSize, we simply drop the bits on the left
+     *
+     * @param newSize
+     */
+    public void resize(int newSize) {
+        if (newSize > size) {
+            int bitsToAdd = newSize - size;
+            for (int i = 0; i < bitsToAdd; i++) {
+                data.add(size+i, false);
+            }
+            this.size = newSize;
+        } else if (newSize < size) {
+            int bitsToRemove = size - newSize;
+            for (int i = 0; i < bitsToRemove; i++) {
+                data.remove(size-i-1);
+            }
+            this.size = newSize;
+        }
+    }
 }

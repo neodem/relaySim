@@ -1,12 +1,15 @@
 package com.neodem.relaySim.objects.component;
 
+import com.neodem.relaySim.data.BitField;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Created by Vincent Fumo (neodem@gmail.com)
  * Created on 4/11/16
  */
-public class Component {
+public abstract class Component {
 
     protected int size;
     protected String name;
@@ -19,6 +22,12 @@ public class Component {
         this.name = name;
     }
 
+//    public abstract void control(BitField controlField);
+
+    public String toString() {
+        return name;
+    }
+
     @Required
     public void setSize(int size) {
         this.size = size;
@@ -26,5 +35,25 @@ public class Component {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Component component = (Component) o;
+
+        return new EqualsBuilder()
+                .append(name, component.name)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(name)
+                .toHashCode();
     }
 }

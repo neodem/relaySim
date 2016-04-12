@@ -1,6 +1,5 @@
 package com.neodem.relaySim.data;
 
-import com.neodem.relaySim.data.BitField;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -85,7 +84,21 @@ public class BitFieldTest {
 
     @Test
     public void bitfieldsEqualsShouldWork() throws Exception {
-        bitField.set(1,0,1,1);
-        assertThat(bitField).isEqualTo(BitField.create(1,0,1,1));
+        bitField.set(1, 0, 1, 1);
+        assertThat(bitField).isEqualTo(BitField.create(1, 0, 1, 1));
+    }
+
+    @Test
+    public void resizeSmallerShouldWork() throws Exception {
+        BitField bitField = BitField.create(1, 0, 1, 1, 1, 0);
+        bitField.resize(4);
+        assertThat(bitField).isEqualTo(BitField.create(1, 1, 1, 0));
+    }
+
+    @Test
+    public void resizeBiggerShouldWork() throws Exception {
+        BitField bitField = BitField.create(1, 0, 1, 1, 1, 0);
+        bitField.resize(10);
+        assertThat(bitField).isEqualTo(BitField.create(0, 0, 0, 0, 1, 0, 1, 1, 1, 0));
     }
 }
