@@ -1,9 +1,9 @@
-package com.neodem.relaySim.objects.register;
+package com.neodem.relaySim.objects.component.register;
 
-import com.neodem.relaySim.objects.BitField;
-import com.neodem.relaySim.objects.Component;
-import com.neodem.relaySim.objects.BusListener;
-import com.neodem.relaySim.objects.bus.Bus;
+import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.objects.component.Component;
+import com.neodem.relaySim.data.BusListener;
+import com.neodem.relaySim.data.Bus;
 
 /**
  * Created by : Vincent Fumo (neodem@gmail.com)

@@ -1,4 +1,4 @@
-package com.neodem.relaySim.objects;
+package com.neodem.relaySim.objects.component;
 
 import org.springframework.beans.factory.annotation.Required;
 

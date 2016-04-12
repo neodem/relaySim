@@ -1,9 +1,9 @@
 package com.neodem.relaySim.integration;
 
-import com.neodem.relaySim.objects.BitField;
-import com.neodem.relaySim.objects.alu.ALU;
-import com.neodem.relaySim.objects.bus.Bus;
-import com.neodem.relaySim.objects.register.Register;
+import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.objects.component.alu.ALU;
+import com.neodem.relaySim.data.Bus;
+import com.neodem.relaySim.objects.component.register.Register;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
@@ -42,7 +42,7 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
 
     @Test
     public void wiringTest() throws Exception {
-        // load 0,0,0,0 into A side of ALU (hijacking the bus, which is normally connected only to the Accumulator)
+        // load 0,0,0,0 into A side of ALU (hijacking the data, which is normally connected only to the Accumulator)
         aluAInBus.updateData(BitField.create(0,0,0,0));
 
         // load 0,0,1,0 into B side of ALU

@@ -1,7 +1,7 @@
-package com.neodem.relaySim.objects.alu;
+package com.neodem.relaySim.objects.component.alu;
 
-import com.neodem.relaySim.objects.BitField;
-import com.neodem.relaySim.objects.bus.Bus;
+import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.*;
 

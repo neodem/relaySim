@@ -1,6 +1,6 @@
 package com.neodem.relaySim.tools;
 
-import com.neodem.relaySim.objects.BitField;
+import com.neodem.relaySim.data.BitField;
 import org.testng.annotations.Test;
 
 import java.util.List;

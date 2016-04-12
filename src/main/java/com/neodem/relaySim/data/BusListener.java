@@ -1,6 +1,4 @@
-package com.neodem.relaySim.objects;
-
-import com.neodem.relaySim.objects.bus.Bus;
+package com.neodem.relaySim.data;
 
 /**
  * Created by Vincent Fumo (neodem@gmail.com)

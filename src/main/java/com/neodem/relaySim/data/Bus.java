@@ -1,8 +1,6 @@
-package com.neodem.relaySim.objects.bus;
+package com.neodem.relaySim.data;
 
-import com.neodem.relaySim.objects.BitField;
-import com.neodem.relaySim.objects.Component;
-import com.neodem.relaySim.objects.BusListener;
+import com.neodem.relaySim.objects.component.Component;
 
 import java.util.Collection;
 import java.util.HashSet;
