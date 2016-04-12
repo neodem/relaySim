@@ -1,0 +1,50 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+ http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+ ">
+
+    <bean id="aluABus" class="com.neodem.relaySim.objects.bus.Bus" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="aluABus"/>
+    </bean>
+
+    <bean id="aluBBus" class="com.neodem.relaySim.objects.bus.Bus" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="aluBBus"/>
+    </bean>
+
+    <bean id="aluOutBus" class="com.neodem.relaySim.objects.bus.Bus" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="aluOutBus"/>
+    </bean>
+
+    <bean id="aluControlBus" class="com.neodem.relaySim.objects.bus.Bus" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="aluControlBus"/>
+    </bean>
+
+    <bean id="accumulatorInBus" class="com.neodem.relaySim.objects.bus.Bus" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="accumulatorInBus"/>
+    </bean>
+
+    <bean id="alu" class="com.neodem.relaySim.objects.alu.ALU" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="ALU"/>
+        <property name="aluAin" ref="aluABus"/>
+        <property name="aluBin" ref="aluBBus"/>
+        <property name="aluOut" ref="aluOutBus"/>
+        <property name="aluControl" ref="aluControlBus"/>
+    </bean>
+
+    <bean id="accumulator" class="com.neodem.relaySim.objects.register.Register" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="Accumulator"/>
+        <property name="inBus" ref="accumulatorInBus"/>
+        <property name="outBus" ref="aluABus"/>
+    </bean>
+
+</beans>

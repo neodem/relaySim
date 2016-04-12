@@ -10,6 +10,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class System {
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("system-context.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("/system-context.xml");
     }
 }

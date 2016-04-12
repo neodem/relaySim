@@ -26,6 +26,11 @@
         <property name="name" value="aluControlBus"/>
     </bean>
 
+    <bean id="accumulatorInBus" class="com.neodem.relaySim.objects.bus.Bus" init-method="init">
+        <property name="size" value="4"/>
+        <property name="name" value="accumulatorInBus"/>
+    </bean>
+
     <bean id="alu" class="com.neodem.relaySim.objects.alu.ALU" init-method="init">
         <property name="size" value="4"/>
         <property name="name" value="ALU"/>
@@ -35,10 +40,11 @@
         <property name="aluControl" ref="aluControlBus"/>
     </bean>
 
-    <bean id="aRegister" class="com.neodem.relaySim.objects.register.Register" init-method="init">
+    <bean id="accumulator" class="com.neodem.relaySim.objects.register.Register" init-method="init">
         <property name="size" value="4"/>
-        <property name="name" value="Register-A"/>
-
+        <property name="name" value="Accumulator"/>
+        <property name="inBus" ref="accumulatorInBus"/>
+        <property name="outBus" ref="aluABus"/>
     </bean>
 
 </beans>

@@ -38,6 +38,10 @@ public class ALU extends Component implements BusListener {
     private BitField inB;
     private BitField control;
 
+    public ALU() {
+        super();
+    }
+
     public ALU(int size, String name) {
         super(size, name);
         init();
