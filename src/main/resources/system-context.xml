@@ -47,4 +47,17 @@
         <property name="outBus" ref="aluABus"/>
     </bean>
 
+    <bean id="ram" class="com.neodem.relaySim.objects.component.memory.Memory" init-method="init">
+        <property name="size" value="2000"/>
+        <property name="addressWidth" value="12"/>
+        <property name="dataWidth" value="4"/>
+    </bean>
+
+    <bean id="simpleMemoryLoader" class="com.neodem.relaySim.core.SimpleMemoryLoader">
+        <property name="memory" ref="ram"/>
+    </bean>
+
+    <bean id="assembler" class="com.neodem.relaySim.core.assembler.Assembler">
+    </bean>
+
 </beans>

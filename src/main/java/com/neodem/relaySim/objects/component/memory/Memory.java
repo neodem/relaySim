@@ -96,4 +96,16 @@ public class Memory implements BusListener {
     public void setSize(int size) {
         this.size = size;
     }
+
+    public Bus getAddressBus() {
+        return addressBus;
+    }
+
+    public Bus getDataBus() {
+        return dataBus;
+    }
+
+    public Bus getControlBus() {
+        return controlBus;
+    }
 }

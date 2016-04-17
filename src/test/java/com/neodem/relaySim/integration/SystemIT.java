@@ -34,6 +34,7 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
 
         Bus accumulatorIn = accumulator.getInBus();
         Bus accumulatorOut = accumulator.getOutBus();
+        Bus accumulatorControl = accumulator.getControlBus();
 
         // start state has everything at 0
         assertThat(aluOut.getData().intValue()).isEqualTo(0);
@@ -50,7 +51,8 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
         aluBin.updateData(BitField.create(1,0,0,1));
 
         // store output of the ALU (which is wired into the accumulator)
-        accumulator.store();
+
+        accumulatorControl.updateData(BitField.create(1));
 
         // check ALU out (should have the new value/out from the ALU)
         assertThat(accumulatorOut.getData()).isEqualTo(BitField.create(1,0,0,1));

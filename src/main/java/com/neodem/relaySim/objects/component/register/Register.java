@@ -13,31 +13,41 @@ public class Register extends Component implements BusListener {
 
     private Bus inBus;
     private Bus outBus;
+    private Bus controlBus;
 
     // internal state
     private BitField input;
 
+    private boolean initCalled = false;
+
     @Override
     public void dataChanged(Bus b) {
-        input = b.getData();
+        if (!initCalled) throw new RuntimeException("init has not been called!");
+
+        BitField control = b.getData();
+        if(control.intValue() == 1) {
+            input = new BitField(inBus.getData());
+            outBus.updateData(input);
+        }
     }
 
     public void init() {
-        input = inBus.getData();
-    }
-
-    public void store() {
-        outBus.updateData(new BitField(this.input));
+        input = BitField.createFromInt(0);
+        outBus.updateData(input);
+        initCalled = true;
     }
 
     public void setInBus(Bus inBus) {
         this.inBus = inBus;
-        this.inBus.addListener(this);
     }
 
     public void setOutBus(Bus outBus) {
         this.outBus = outBus;
-        this.outBus.addListener(this);
+    }
+
+    public void setControlBus(Bus controlBus) {
+        this.controlBus = controlBus;
+        this.controlBus.addListener(this);
     }
 
     public Bus getInBus() {
@@ -46,5 +56,9 @@ public class Register extends Component implements BusListener {
 
     public Bus getOutBus() {
         return outBus;
+    }
+
+    public Bus getControlBus() {
+        return controlBus;
     }
 }

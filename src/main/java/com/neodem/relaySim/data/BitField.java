@@ -57,20 +57,31 @@ public class BitField {
         String bitstring = Integer.toString(value, 2);
         int size = bitstring.length();
         BitField result = new BitField(size);
-        for(int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             boolean val = bitstring.charAt(i) == '1';
-            result.setBit(size-i-1, val);
+            result.setBit(size - i - 1, val);
         }
         return result;
+    }
+
+    public static BitField createFromHex(String hexString) {
+        int fieldSize = 4 * hexString.length();
+        int value = Integer.parseInt(hexString, 16);
+        return createFromInt(value, fieldSize);
+    }
+
+    public static BitField createFromHex(String hexString, int fieldSize) {
+        int value = Integer.parseInt(hexString, 16);
+        return createFromInt(value, fieldSize);
     }
 
     public static BitField createFromInt(int value, int fieldSize) {
         String bitstring = Integer.toString(value, 2);
         int size = bitstring.length();
         BitField result = new BitField(size);
-        for(int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             boolean val = bitstring.charAt(i) == '1';
-            result.setBit(size-i-1, val);
+            result.setBit(size - i - 1, val);
         }
 
         return result.resize(fieldSize);
@@ -237,13 +248,13 @@ public class BitField {
         if (newSize > size) {
             int bitsToAdd = newSize - size;
             for (int i = 0; i < bitsToAdd; i++) {
-                data.add(size+i, false);
+                data.add(size + i, false);
             }
             this.size = newSize;
         } else if (newSize < size) {
             int bitsToRemove = size - newSize;
             for (int i = 0; i < bitsToRemove; i++) {
-                data.remove(size-i-1);
+                data.remove(size - i - 1);
             }
             this.size = newSize;
         }

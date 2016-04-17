@@ -31,6 +31,11 @@
         <property name="name" value="accumulatorInBus"/>
     </bean>
 
+    <bean id="accumulatorControl" class="com.neodem.relaySim.data.Bus" init-method="init">
+        <property name="size" value="1"/>
+        <property name="name" value="accumulatorControl"/>
+    </bean>
+
     <!--<bean id="aluOutToAccumulatorInConnector" class="com.neodem.relaySim.data.BusConnection">-->
         <!--<property name="busA" ref="aluOutBus"/>-->
         <!--<property name="busB" ref="accumulatorInBus"/>-->
@@ -50,6 +55,7 @@
         <property name="name" value="Accumulator"/>
         <property name="inBus" ref="aluOutBus"/>
         <property name="outBus" ref="aluABus"/>
+        <property name="controlBus" ref="accumulatorControl"/>
     </bean>
 
 </beans>
