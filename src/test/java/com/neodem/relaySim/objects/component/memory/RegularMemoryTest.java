@@ -21,12 +21,10 @@ public class RegularMemoryTest {
 
     @BeforeTest
     public void before() throws Exception {
-        addressBus = new Bus(12, "memAddress");
-        dataBus = new Bus(4, "memData");
 
-        mem = new RegularMemory(12, 4, 100);
-        mem.setAddressBus(addressBus);
-        mem.setDataBus(dataBus);
+        mem = new RegularMemory("testRAM", 12, 4, 100);
+        addressBus = mem.getAddressBus();
+        dataBus = mem.getDataBus();
         mem.chipSelect(true);
     }
 

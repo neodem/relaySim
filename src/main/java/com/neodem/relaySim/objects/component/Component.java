@@ -1,6 +1,5 @@
 package com.neodem.relaySim.objects.component;
 
-import com.neodem.relaySim.data.BitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Required;
@@ -13,6 +12,7 @@ public abstract class Component {
 
     protected int size;
     protected String name;
+    protected boolean initCalled = false;
 
     public Component() {
     }
@@ -22,7 +22,9 @@ public abstract class Component {
         this.name = name;
     }
 
-//    public abstract void control(BitField controlField);
+    public void init() {
+        initCalled = true;
+    }
 
     public String toString() {
         return name;

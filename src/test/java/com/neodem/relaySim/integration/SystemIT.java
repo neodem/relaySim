@@ -3,7 +3,7 @@ package com.neodem.relaySim.integration;
 import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.objects.component.alu.ALU;
 import com.neodem.relaySim.data.Bus;
-import com.neodem.relaySim.objects.component.register.Register;
+import com.neodem.relaySim.objects.component.register.RegularRegister;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
@@ -23,7 +23,7 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
     private ALU alu;
 
     @Resource
-    private Register accumulator;
+    private RegularRegister accumulator;
 
     @Test
     public void wiringTest() throws Exception {
@@ -34,7 +34,6 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
 
         Bus accumulatorIn = accumulator.getInBus();
         Bus accumulatorOut = accumulator.getOutBus();
-        Bus accumulatorControl = accumulator.getControlBus();
 
         // start state has everything at 0
         assertThat(aluOut.getData().intValue()).isEqualTo(0);
@@ -52,7 +51,8 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
 
         // store output of the ALU (which is wired into the accumulator)
 
-        accumulatorControl.updateData(BitField.create(1));
+        accumulator.chipSelect(true);
+        accumulator.write(true);
 
         // check ALU out (should have the new value/out from the ALU)
         assertThat(accumulatorOut.getData()).isEqualTo(BitField.create(1,0,0,1));

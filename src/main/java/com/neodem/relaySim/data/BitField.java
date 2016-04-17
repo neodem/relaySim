@@ -212,6 +212,33 @@ public class BitField {
         return result;
     }
 
+    /**
+     * return a new BitField. Inclusive
+     * @param from
+     * @param to
+     * @return
+     */
+    public BitField getSubField(int from, int to) {
+        if (from > to)
+            throw new IllegalArgumentException("from needs to be less than to");
+
+        if(from == to)
+            throw new IllegalArgumentException("making from and to the same would return a subfield of size 0");
+
+        int requestedSize = to-from+1;
+        if (requestedSize >= size)
+            throw new IllegalArgumentException("can't get more bits (" + requestedSize + ") than the size (" + size + ") of the field!");
+
+        BitField result = new BitField(requestedSize);
+
+        for (int i = 0; i < requestedSize; i++) {
+            int j = from + i;
+            result.setBit(i, getBit(j));
+        }
+
+        return result;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -261,4 +288,9 @@ public class BitField {
 
         return this;
     }
+
+    public BitField copy() {
+        return new BitField(this);
+    }
+
 }

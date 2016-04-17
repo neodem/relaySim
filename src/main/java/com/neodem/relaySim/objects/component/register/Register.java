@@ -1,64 +1,22 @@
 package com.neodem.relaySim.objects.component.register;
 
-import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.objects.component.Component;
-import com.neodem.relaySim.data.BusListener;
 import com.neodem.relaySim.data.Bus;
 
 /**
- * Created by : Vincent Fumo (neodem@gmail.com)
- * Created on : 3/25/16
+ * The Register will always have it's internal state sent to it's out bus.
+ *
+ * Created by Vincent Fumo (neodem@gmail.com)
+ * Created on 4/17/16
  */
-public class Register extends Component implements BusListener {
+public interface Register {
 
-    private Bus inBus;
-    private Bus outBus;
-    private Bus controlBus;
+    void chipSelect(boolean selected);
 
-    // internal state
-    private BitField input;
+    void write(boolean write);
 
-    private boolean initCalled = false;
+    void setInBus(Bus inBus);
+    Bus getInBus();
 
-    @Override
-    public void dataChanged(Bus b) {
-        if (!initCalled) throw new RuntimeException("init has not been called!");
-
-        BitField control = b.getData();
-        if(control.intValue() == 1) {
-            input = new BitField(inBus.getData());
-            outBus.updateData(input);
-        }
-    }
-
-    public void init() {
-        input = BitField.createFromInt(0);
-        outBus.updateData(input);
-        initCalled = true;
-    }
-
-    public void setInBus(Bus inBus) {
-        this.inBus = inBus;
-    }
-
-    public void setOutBus(Bus outBus) {
-        this.outBus = outBus;
-    }
-
-    public void setControlBus(Bus controlBus) {
-        this.controlBus = controlBus;
-        this.controlBus.addListener(this);
-    }
-
-    public Bus getInBus() {
-        return inBus;
-    }
-
-    public Bus getOutBus() {
-        return outBus;
-    }
-
-    public Bus getControlBus() {
-        return controlBus;
-    }
+    void setOutBus(Bus outBus);
+    Bus getOutBus();
 }

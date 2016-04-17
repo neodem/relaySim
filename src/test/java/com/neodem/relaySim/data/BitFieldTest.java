@@ -83,6 +83,18 @@ public class BitFieldTest {
     }
 
     @Test
+    public void getSubFieldShouldWork() throws Exception {
+        BitField testField = BitField.create(0,0,1,1,0,0);
+        BitField result = testField.getSubField(2,4);
+
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.getBit(0)).isEqualTo(1);
+        assertThat(result.getBit(1)).isEqualTo(1);
+        assertThat(result.getBit(2)).isEqualTo(0);
+
+    }
+
+    @Test
     public void bitfieldsEqualsShouldWork() throws Exception {
         bitField.set(1, 0, 1, 1);
         assertThat(bitField).isEqualTo(BitField.create(1, 0, 1, 1));

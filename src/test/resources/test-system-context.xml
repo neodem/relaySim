@@ -50,7 +50,7 @@
         <property name="aluControl" ref="aluControlBus"/>
     </bean>
 
-    <bean id="accumulator" class="com.neodem.relaySim.objects.component.register.Register" init-method="init">
+    <bean id="accumulator" class="com.neodem.relaySim.objects.component.register.RegularRegister" init-method="init">
         <property name="size" value="4"/>
         <property name="name" value="Accumulator"/>
         <property name="inBus" ref="aluOutBus"/>
