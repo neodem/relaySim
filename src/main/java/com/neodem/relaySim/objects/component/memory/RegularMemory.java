@@ -59,7 +59,10 @@ public class RegularMemory implements Memory, BusListener {
             data.add(toStore);
         }
 
-        if(addressBus == null) addressBus = new Bus(addressWidth, name + "-Bus-Address");
+        if(addressBus == null) {
+            addressBus = new Bus(addressWidth, name + "-Bus-Address");
+            addressBus.addListener(this);
+        }
         if(dataBus == null) dataBus = new Bus(dataWidth, name + "-Bus-Data");
 
         initCalled = true;
