@@ -42,8 +42,10 @@ public class Bus extends Component {
     }
 
     private void alertListeners() {
-        for (BusListener c : listeners) {
-            c.dataChanged(this);
+        if (listeners != null) {
+            for (BusListener c : listeners) {
+                c.dataChanged(this);
+            }
         }
     }
 }
