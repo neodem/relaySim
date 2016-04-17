@@ -19,14 +19,13 @@ public class SimpleMemoryLoader implements MemoryLoader {
 
         Bus addressBus = memory.getAddressBus();
         Bus dataBus = memory.getDataBus();
-        Bus controlBus = memory.getControlBus();
 
         List<BitField> buffer = block.getData();
 
         for(int i = 0; i<buffer.size(); i++) {
             addressBus.updateData(BitField.createFromInt(address));
             dataBus.updateData(buffer.get(i));
-            controlBus.updateData(BitField.create(1,0));
+            memory.write(true);
             address++;
         }
     }
