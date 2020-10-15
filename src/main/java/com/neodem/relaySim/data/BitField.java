@@ -47,6 +47,14 @@ public class BitField {
         }
     }
 
+    public static BitField create(boolean... values) {
+        BitField result = new BitField(values.length);
+        for (int i = 0; i < values.length; i++) {
+            result.setBit(values.length - i - 1, values[i]);
+        }
+        return result;
+    }
+
     public static BitField create(int... values) {
         BitField result = new BitField(values.length);
         result.set(values);
@@ -76,15 +84,33 @@ public class BitField {
     }
 
     public static BitField createFromInt(int value, int fieldSize) {
-        String bitstring = Integer.toString(value, 2);
-        int size = bitstring.length();
-        BitField result = new BitField(size);
-        for (int i = 0; i < size; i++) {
-            boolean val = bitstring.charAt(i) == '1';
-            result.setBit(size - i - 1, val);
+        BitField result = BitField.createFromInt(value);
+        return result.resize(fieldSize);
+    }
+
+    /**
+     * make a new BF by combining multiple BFs by placing them next to each other. The first one
+     * will be on the left
+     * <p>
+     * Example:
+     * <p>
+     * first : 00010
+     * second : 011
+     * third : 1111
+     * <p>
+     * result : 000100111111
+     *
+     * @param fields
+     * @return
+     */
+    public static BitField combine(BitField... fields) {
+        BitField result = new BitField(fields[0]);
+
+        for (int i = 1; i < fields.length; i++) {
+            result.shiftAndAddToRight(fields[i]);
         }
 
-        return result.resize(fieldSize);
+        return result;
     }
 
     /**
@@ -214,6 +240,7 @@ public class BitField {
 
     /**
      * return a new BitField. Inclusive
+     *
      * @param from
      * @param to
      * @return
@@ -222,10 +249,10 @@ public class BitField {
         if (from > to)
             throw new IllegalArgumentException("from needs to be less than to");
 
-        if(from == to)
+        if (from == to)
             throw new IllegalArgumentException("making from and to the same would return a subfield of size 0");
 
-        int requestedSize = to-from+1;
+        int requestedSize = to - from + 1;
         if (requestedSize >= size)
             throw new IllegalArgumentException("can't get more bits (" + requestedSize + ") than the size (" + size + ") of the field!");
 
@@ -263,6 +290,42 @@ public class BitField {
 
     public int size() {
         return size;
+    }
+
+    /**
+     * resize and add the given field to the right of this field
+     *
+     * @param fieldToAddToTheRight
+     */
+    public void shiftAndAddToRight(BitField fieldToAddToTheRight) {
+        int bitsToAdd = fieldToAddToTheRight.size;
+        shiftLeft(bitsToAdd);
+        for (int i = 0; i < bitsToAdd; i++) {
+            data.set(i, fieldToAddToTheRight.getBitAsBoolean(i));
+        }
+    }
+
+    /**
+     * shift to the left and pad with 0's
+     *
+     * @param numberToShift
+     */
+    public void shiftLeft(int numberToShift) {
+        int oldSize = this.size;
+        resize(numberToShift + oldSize);
+
+        int offset = this.size - oldSize;
+
+        // shift old stuff left
+        for (int i = oldSize-1; i >= 0; i--) {
+            Boolean value = data.get(i);
+            data.set(i+offset, value);
+        }
+
+        // pad with 0 for stuff moved
+        for (int i = 0; i < numberToShift; i++) {
+            data.set(i, false);
+        }
     }
 
     /**

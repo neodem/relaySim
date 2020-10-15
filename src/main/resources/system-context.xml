@@ -31,7 +31,7 @@
         <property name="name" value="accumulatorInBus"/>
     </bean>
 
-    <bean id="alu" class="com.neodem.relaySim.objects.component.alu.ALU" init-method="init">
+    <bean id="alu" class="com.neodem.relaySim.objects.component.alu.BusBasedALU" init-method="init">
         <property name="size" value="4"/>
         <property name="name" value="ALU"/>
         <property name="aluAin" ref="aluABus"/>

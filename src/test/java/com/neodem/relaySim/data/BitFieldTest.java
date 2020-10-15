@@ -119,4 +119,55 @@ public class BitFieldTest {
         BitField val = BitField.createFromInt(6);
         assertThat(val).isEqualTo(BitField.create(1,1,0));
     }
+
+    @Test
+    public void shiftLeftShouldWork() {
+        BitField field = BitField.create(1,0,0,1);
+        field.shiftLeft(3);
+        assertThat(field).isEqualTo(BitField.create(1,0,0,1,0,0,0));
+    }
+
+    @Test
+    public void shiftAndAddToRightShouldWork() {
+        BitField field = BitField.create(1,0,0,1);
+        field.shiftAndAddToRight(BitField.create(1,1,1));
+        assertThat(field).isEqualTo(BitField.create(1,0,0,1,1,1,1));
+    }
+
+    @Test
+    public void combineShouldCreateProperField() {
+        BitField first = BitField.create(0,0,0,1,0);
+        BitField second = BitField.create(0,1,1);
+        BitField third = BitField.create(1,1,1,1);
+
+        BitField combined = BitField.combine(first, second, third);
+        assertThat(combined).isEqualTo(BitField.create(0,0,0,1,0, 0,1,1, 1,1,1,1));
+    }
+
+    /*
+
+     * make a new BF by combining multiple BFs by placing them next to each other. The first one
+     * will be on the left
+     * <p>
+     * Example:
+     * <p>
+     * first : 00010
+     * second : 011
+     * third : 1111
+     * <p>
+     * result : 000100111111
+     *
+     * @param fields
+     * @return
+
+    public static BitField combine(BitField... fields) {
+        BitField result = new BitField(fields[0]);
+
+        for (int i = 1; i < fields.length; i++) {
+            result.shiftAndAddToRight(fields[i]);
+        }
+
+        return result;
+    }
+     */
 }

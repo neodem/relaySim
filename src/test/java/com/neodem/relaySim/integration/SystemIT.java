@@ -1,7 +1,7 @@
 package com.neodem.relaySim.integration;
 
 import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.objects.component.alu.ALU;
+import com.neodem.relaySim.objects.component.alu.BusBasedALU;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.objects.component.register.RegularRegister;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SystemIT extends AbstractTestNGSpringContextTests {
 
     @Resource
-    private ALU alu;
+    private BusBasedALU alu;
 
     @Resource
     private RegularRegister accumulator;
