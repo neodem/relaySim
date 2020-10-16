@@ -2,6 +2,7 @@ package com.neodem.relaySim.core.assembler;
 
 import com.neodem.relaySim.core.MemoryBlock;
 import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.ListBasedBitField;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -23,17 +24,17 @@ import java.util.List;
  */
 public class Assembler {
 
-    private final static BitField DEFAULT_START = BitField.create(0,0,0,0, 0,0,0,1, 0,0,0,0);
+    private final static BitField DEFAULT_START = ListBasedBitField.create(0,0,0,0, 0,0,0,1, 0,0,0,0);
 
-    private final static BitField LDA_IMMEDIATE = BitField.create(0,0,0,1);
-    private final static BitField LDA_ADDRESS   = BitField.create(0,0,1,0);
+    private final static BitField LDA_IMMEDIATE = ListBasedBitField.create(0,0,0,1);
+    private final static BitField LDA_ADDRESS   = ListBasedBitField.create(0,0,1,0);
 
-    private final static BitField ADC_IMMEDIATE = BitField.create(0,0,1,1);
-    private final static BitField ADC_ADDRESS   = BitField.create(0,1,0,0);
+    private final static BitField ADC_IMMEDIATE = ListBasedBitField.create(0,0,1,1);
+    private final static BitField ADC_ADDRESS   = ListBasedBitField.create(0,1,0,0);
 
-    private final static BitField STA_ADDRESS   = BitField.create(0,1,0,1);
+    private final static BitField STA_ADDRESS   = ListBasedBitField.create(0,1,0,1);
 
-    private final static BitField HLT           = BitField.create(0,0,0,0);
+    private final static BitField HLT           = ListBasedBitField.create(0,0,0,0);
 
     private BitField org;
     private List<BitField> data = new ArrayList<>();
@@ -56,51 +57,56 @@ public class Assembler {
 
     private void handleOrg(AsmParam param) {
         if(param.isAddress()) {
-            org = param.getAddress().resize(12);
+            org = param.getAddress().copy();
+            org.resize(12);
         }
     }
 
     private void handleHLT() {
         data.add(HLT.copy());
-        data.add(BitField.create(0,0,0,0));
-        data.add(BitField.create(0,0,0,0));
-        data.add(BitField.create(0,0,0,0));
+        data.add(ListBasedBitField.create(0,0,0,0));
+        data.add(ListBasedBitField.create(0,0,0,0));
+        data.add(ListBasedBitField.create(0,0,0,0));
     }
 
     private void handleLDA(AsmParam param) {
         if(param.isImmediate()) {
             data.add(LDA_IMMEDIATE.copy());
-            data.add(param.getImmediate().resize(4));
-            data.add(BitField.create(0,0,0,0));
-            data.add(BitField.create(0,0,0,0));
+            BitField copy = param.getImmediate().copy();
+            copy.resize(4);
+            data.add(copy);
+            data.add(ListBasedBitField.create(0,0,0,0));
+            data.add(ListBasedBitField.create(0,0,0,0));
         } else if(param.isAddress()) {
             data.add(LDA_ADDRESS.copy());
-            data.add(param.getAddress().getMSB(4));
+            data.add(param.getAddress().getMSBs(4));
             data.add(param.getAddress().getSubField(4,7));
-            data.add(param.getAddress().getLSB(4));
+            data.add(param.getAddress().getLSBs(4));
         }
     }
 
     private void handleADC(AsmParam param) {
         if(param.isImmediate()) {
             data.add(ADC_IMMEDIATE.copy());
-            data.add(param.getImmediate().resize(4));
-            data.add(BitField.create(0,0,0,0));
-            data.add(BitField.create(0,0,0,0));
+            BitField copy = param.getImmediate().copy();
+            copy.resize(4);
+            data.add(copy);
+            data.add(ListBasedBitField.create(0,0,0,0));
+            data.add(ListBasedBitField.create(0,0,0,0));
         } else if(param.isAddress()) {
             data.add(ADC_ADDRESS.copy());
-            data.add(param.getAddress().getMSB(4));
+            data.add(param.getAddress().getMSBs(4));
             data.add(param.getAddress().getSubField(4,7));
-            data.add(param.getAddress().getLSB(4));
+            data.add(param.getAddress().getLSBs(4));
         }
     }
 
     private void handleSTA(AsmParam param) {
         if(param.isAddress()) {
             data.add(STA_ADDRESS.copy());
-            data.add(param.getAddress().getMSB(4));
+            data.add(param.getAddress().getMSBs(4));
             data.add(param.getAddress().getSubField(4,7));
-            data.add(param.getAddress().getLSB(4));
+            data.add(param.getAddress().getLSBs(4));
         }
     }
 }

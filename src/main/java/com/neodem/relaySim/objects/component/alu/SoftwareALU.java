@@ -1,6 +1,7 @@
 package com.neodem.relaySim.objects.component.alu;
 
 import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.ListBasedBitField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +27,9 @@ public class SoftwareALU implements ALU {
 
     @Override
     public ALUResult operate(boolean s0, boolean s1, boolean cIn, boolean bInv, BitField a, BitField b) {
-        BitField actaulB = new BitField(b);
+        BitField actaulB = new ListBasedBitField(b);
         if (bInv) {
-            actaulB.invert();
+            actaulB.invertAllBits();
         }
 
         ALUResult result;
@@ -76,9 +77,9 @@ public class SoftwareALU implements ALU {
     }
 
     protected ALUResult process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
-        BitField out = new BitField(aluSize);
+        BitField out = new ListBasedBitField(aluSize);
 
-        for (int i = 0; i < a.getSize(); i++) {
+        for (int i = 0; i < a.size(); i++) {
             boolean bitA = a.getBitAsBoolean(i);
             boolean bitB = b.getBitAsBoolean(i);
             boolean result = function.apply(bitA, bitB);
@@ -96,10 +97,10 @@ public class SoftwareALU implements ALU {
      */
     protected ALUResult doAddition(BitField a, BitField b, boolean carryIn) {
 
-        BitField out = new BitField(aluSize);
+        BitField out = new ListBasedBitField(aluSize);
         boolean carry = carryIn;
 
-        for (int i = 0; i < a.getSize(); i++) {
+        for (int i = 0; i < a.size(); i++) {
             boolean bitA = a.getBitAsBoolean(i);
             boolean bitB = b.getBitAsBoolean(i);
             boolean result = add(bitA, bitB, carry);

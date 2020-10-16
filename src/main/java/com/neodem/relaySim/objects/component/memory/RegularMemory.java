@@ -3,6 +3,7 @@ package com.neodem.relaySim.objects.component.memory;
 import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
+import com.neodem.relaySim.data.ListBasedBitField;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class RegularMemory implements Memory, BusListener {
 
         data = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            BitField toStore = BitField.createFromInt(0, dataWidth);
+            BitField toStore = ListBasedBitField.createFromInt(0, dataWidth);
             data.add(toStore);
         }
 
@@ -78,7 +79,7 @@ public class RegularMemory implements Memory, BusListener {
         if (!initCalled)
             throw new RuntimeException("init has not been called! This component has not been initialized!");
         if (selected && write) {
-            data.set(currentAddress, new BitField(dataBus.getData()));
+            data.set(currentAddress, new ListBasedBitField(dataBus.getData()));
         }
     }
 
@@ -87,7 +88,7 @@ public class RegularMemory implements Memory, BusListener {
         if (!initCalled)
             throw new RuntimeException("init has not been called! This component has not been initialized!");
         if (selected && read) {
-            dataBus.updateData(new BitField(data.get(currentAddress)));
+            dataBus.updateData(new ListBasedBitField(data.get(currentAddress)));
         }
     }
 

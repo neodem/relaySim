@@ -3,6 +3,7 @@ package com.neodem.relaySim.objects.component.alu;
 import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
+import com.neodem.relaySim.data.ListBasedBitField;
 import com.neodem.relaySim.objects.component.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ public class BusBasedALU extends Component implements BusListener {
      * @return a properly formatted control bitfield
      */
     public static BitField codeControlField(ALUOperation op, boolean bInv, boolean carryIn) {
-        BitField controlSignal = new BitField(4);
+        BitField controlSignal = new ListBasedBitField(4);
 
         switch (op) {
             case ADD:
@@ -112,10 +113,10 @@ public class BusBasedALU extends Component implements BusListener {
     }
 
     public void init() {
-        out = new BitField(size + 1);
-        inA = new BitField(size);
-        inB = new BitField(size);
-        control = new BitField(4);
+        out = new ListBasedBitField(size + 1);
+        inA = new ListBasedBitField(size);
+        inB = new ListBasedBitField(size);
+        control = new ListBasedBitField(4);
     }
 
     @Override
@@ -162,9 +163,9 @@ public class BusBasedALU extends Component implements BusListener {
 
     protected BitField compute(BitField inA, BitField inB, ALUOperation op, boolean bInv, boolean carryIn) {
 
-        BitField actaulB = new BitField(inB);
+        BitField actaulB = new ListBasedBitField(inB);
         if (bInv) {
-            actaulB.invert();
+            actaulB.invertAllBits();
         }
 
         boolean carryOut = false;
@@ -200,7 +201,7 @@ public class BusBasedALU extends Component implements BusListener {
      * @return true if we overflow
      */
     protected boolean doAddition(BitField a, BitField b, boolean carry) {
-        for (int i = 0; i < a.getSize(); i++) {
+        for (int i = 0; i < a.size(); i++) {
             boolean bitA = a.getBitAsBoolean(i);
             boolean bitB = b.getBitAsBoolean(i);
             boolean result = add(bitA, bitB, carry);
@@ -211,7 +212,7 @@ public class BusBasedALU extends Component implements BusListener {
     }
 
     protected void process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
-        for (int i = 0; i < a.getSize(); i++) {
+        for (int i = 0; i < a.size(); i++) {
             boolean bitA = a.getBitAsBoolean(i);
             boolean bitB = b.getBitAsBoolean(i);
 
@@ -222,7 +223,7 @@ public class BusBasedALU extends Component implements BusListener {
     private ALUOperation decodeOperation(BitField control) {
         ALUOperation op = null;
 
-        int intValue = control.getMSB(2).intValue();
+        int intValue = control.getMSBs(2).intValue();
         switch (intValue) {
             case 0:
                 //00

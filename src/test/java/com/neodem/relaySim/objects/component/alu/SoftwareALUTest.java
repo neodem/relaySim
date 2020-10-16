@@ -1,6 +1,7 @@
 package com.neodem.relaySim.objects.component.alu;
 
 import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.ListBasedBitField;
 import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -37,38 +38,38 @@ public class SoftwareALUTest {
         boolean cIn = false;
         boolean bInv = false;
 
-        BitField a = BitField.create(0, 0, 0, 0);
-        BitField b = BitField.create(0, 0, 0, 0);
+        BitField a = ListBasedBitField.create(0, 0, 0, 0);
+        BitField b = ListBasedBitField.create(0, 0, 0, 0);
         ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 0, 0));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 0, 0));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(0, 0, 0, 1);
-        b = BitField.create(0, 0, 0, 0);
+        a = ListBasedBitField.create(0, 0, 0, 1);
+        b = ListBasedBitField.create(0, 0, 0, 0);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 0, 1));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 0, 1));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(0, 0, 0, 0);
-        b = BitField.create(0, 0, 0, 1);
+        a = ListBasedBitField.create(0, 0, 0, 0);
+        b = ListBasedBitField.create(0, 0, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 0, 1));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 0, 1));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(0, 0, 1, 0);
-        b = BitField.create(0, 0, 0, 1);
+        a = ListBasedBitField.create(0, 0, 1, 0);
+        b = ListBasedBitField.create(0, 0, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 1, 1));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 1, 1));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(1, 0, 1, 0);
-        b = BitField.create(0, 1, 0, 1);
+        a = ListBasedBitField.create(1, 0, 1, 0);
+        b = ListBasedBitField.create(0, 1, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(1, 1, 1, 1));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(1, 1, 1, 1));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
     }
@@ -80,38 +81,38 @@ public class SoftwareALUTest {
         boolean cIn = true;
         boolean bInv = false;
 
-        BitField a = BitField.create(0, 0, 0, 0);
-        BitField b = BitField.create(0, 0, 0, 0);
+        BitField a = ListBasedBitField.create(0, 0, 0, 0);
+        BitField b = ListBasedBitField.create(0, 0, 0, 0);
         ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 0, 1));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 0, 1));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(0, 0, 0, 1);
-        b = BitField.create(0, 0, 0, 0);
+        a = ListBasedBitField.create(0, 0, 0, 1);
+        b = ListBasedBitField.create(0, 0, 0, 0);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 1, 0));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 1, 0));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(0, 0, 0, 0);
-        b = BitField.create(0, 0, 0, 1);
+        a = ListBasedBitField.create(0, 0, 0, 0);
+        b = ListBasedBitField.create(0, 0, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 1, 0));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 1, 0));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(0, 0, 1, 0);
-        b = BitField.create(0, 0, 0, 1);
+        a = ListBasedBitField.create(0, 0, 1, 0);
+        b = ListBasedBitField.create(0, 0, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 1, 0, 0));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 1, 0, 0));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
-        a = BitField.create(1, 0, 1, 0);
-        b = BitField.create(0, 1, 0, 1);
+        a = ListBasedBitField.create(1, 0, 1, 0);
+        b = ListBasedBitField.create(0, 1, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
-        assertThat(result.getResult()).isEqualTo(BitField.create(0, 0, 0, 0));
+        assertThat(result.getResult()).isEqualTo(ListBasedBitField.create(0, 0, 0, 0));
         assertThat(result.isCarryOut()).isTrue();
         assertThat(result.isOverflow()).isFalse();
     }

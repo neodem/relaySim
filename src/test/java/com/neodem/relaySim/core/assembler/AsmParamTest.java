@@ -1,6 +1,7 @@
 package com.neodem.relaySim.core.assembler;
 
 import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.ListBasedBitField;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +16,7 @@ public class AsmParamTest {
     public void createAddressShouldWork() throws Exception {
         AsmParam p = new AsmParam("$010");
         assertThat(p.isAddress()).isTrue();
-        assertThat(p.getAddress()).isEqualTo(BitField.create(0,0,0,0,0,0,0,1,0,0,0,0));
+        assertThat(p.getAddress()).isEqualTo(ListBasedBitField.create(0,0,0,0,0,0,0,1,0,0,0,0));
     }
 
     @Test

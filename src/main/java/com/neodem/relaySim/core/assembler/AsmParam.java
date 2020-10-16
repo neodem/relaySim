@@ -1,6 +1,7 @@
 package com.neodem.relaySim.core.assembler;
 
 import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.ListBasedBitField;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -16,11 +17,11 @@ public class AsmParam {
 
         if (StringUtils.startsWith(clean, "$")) {
             String hexString = StringUtils.substringAfter(clean, "$");
-            address = BitField.createFromHex(hexString);
+            address = ListBasedBitField.createFromHex(hexString);
         } else if (StringUtils.startsWith(clean, "#")) {
             String intString = StringUtils.substringAfter(clean, "#");
             int intValue = Integer.parseInt(intString);
-            immediate = BitField.createFromInt(intValue);
+            immediate = ListBasedBitField.createFromInt(intValue);
         }
     }
 

@@ -2,6 +2,7 @@ package com.neodem.relaySim.objects.component.alu;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.ListBasedBitField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +20,58 @@ public class HardwareALUProxy implements ALU {
 
     @Override
     public ALUResult operate(boolean s0, boolean s1, boolean cIn, boolean bInv, BitField a, BitField b) {
-        BitField input = BitField.combine(BitField.create(s0, s1, cIn, bInv), a, b);
-        ALUResult result = sendToHardware(input);
+        BitField input = ListBasedBitField.combine(ListBasedBitField.create(s0, s1, cIn, bInv), a, b);
+        ALUResult result = communeWithHardware(input);
         return result;
     }
 
-    private ALUResult sendToHardware(BitField input) {
-        SerialPort sp = getSerialPort();
-        sp.setComPortParameters(9600, 8, 1, 0); // default connection settings for Arduino
-        sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0); // block until bytes can be written
+    private ALUResult communeWithHardware(BitField input) {
+        ALUResult result = null;
 
-        if (sp.openPort()) {
-            logger.info("Port is open :)");
-        } else {
-            logger.warn("Failed to open port :(");
-            return null;
+        // send the 12 bit signal
+        sendToHardware(input);
+
+        // get back the 5 bit result
+        BitField received = receiveFromHardware();
+
+        if (received != null) {
+            result = new ALUResult(received.getSubField(0, 3), received.getBitAsBoolean(4));
         }
+
+        return result;
+    }
+
+    private BitField receiveFromHardware() {
+        SerialPort sp = getSerialPort();
+
+        // block until bytes can be written
+        sp.setComPortTimeouts(SerialPort.TIMEOUT_READ_BLOCKING, 1000, 0);
+
+        openPort(sp);
+
+        // get data
+        try {
+            byte[] readBuffer = new byte[1];
+
+            // this should block until it gets its one byte
+            int numRead = sp.readBytes(readBuffer, readBuffer.length);
+            logger.info("Read " + numRead + " bytes.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        closePort(sp);
+
+        return null;
+    }
+
+    private void sendToHardware(BitField input) {
+        SerialPort sp = getSerialPort();
+
+        // block until bytes can be written
+        sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
+
+        openPort(sp);
 
         // send data
         try {
@@ -47,19 +84,33 @@ public class HardwareALUProxy implements ALU {
             e.printStackTrace();
         }
 
+        closePort(sp);
+    }
+
+    private void openPort(SerialPort sp) {
+        if (sp.openPort()) {
+            logger.info("Port is open :)");
+        } else {
+            logger.warn("Failed to open port :(");
+            return;
+        }
+    }
+
+    private void closePort(SerialPort sp) {
         if (sp.closePort()) {
             logger.info("Port is closed :)");
         } else {
             logger.warn("Failed to close port :(");
-            return null;
+            return;
         }
-
-
-        return null;
     }
 
     private SerialPort getSerialPort() {
-        return SerialPort.getCommPort("/dev/ttyACM1");
+        SerialPort sp = SerialPort.getCommPort("/dev/ttyACM1");
+
+        // default connection settings for Arduino
+        sp.setComPortParameters(9600, 8, 1, 0);
+        return sp;
     }
 
 }
