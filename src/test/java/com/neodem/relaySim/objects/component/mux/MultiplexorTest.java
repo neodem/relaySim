@@ -1,7 +1,7 @@
 package com.neodem.relaySim.objects.component.mux;
 
 import com.neodem.relaySim.data.Bus;
-import com.neodem.relaySim.data.BitFieldBuilder;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;

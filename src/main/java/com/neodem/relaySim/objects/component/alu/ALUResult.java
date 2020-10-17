@@ -1,6 +1,6 @@
 package com.neodem.relaySim.objects.component.alu;
 
-import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.bitfield.BitField;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

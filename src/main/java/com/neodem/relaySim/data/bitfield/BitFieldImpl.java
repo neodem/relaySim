@@ -1,4 +1,4 @@
-package com.neodem.relaySim.data;
+package com.neodem.relaySim.data.bitfield;
 
 import com.neodem.relaySim.tools.BitTools;
 import org.apache.commons.lang3.builder.EqualsBuilder;

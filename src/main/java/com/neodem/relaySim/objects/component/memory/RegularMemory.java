@@ -1,9 +1,9 @@
 package com.neodem.relaySim.objects.component.memory;
 
-import com.neodem.relaySim.data.BitField;
+import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
-import com.neodem.relaySim.data.BitFieldBuilder;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;

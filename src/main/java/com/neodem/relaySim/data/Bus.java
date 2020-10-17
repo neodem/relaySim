@@ -1,5 +1,7 @@
 package com.neodem.relaySim.data;
 
+import com.neodem.relaySim.data.bitfield.BitField;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import com.neodem.relaySim.objects.component.Component;
 
 import java.util.Collection;

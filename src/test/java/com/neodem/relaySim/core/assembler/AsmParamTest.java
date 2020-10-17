@@ -1,6 +1,6 @@
 package com.neodem.relaySim.core.assembler;
 
-import com.neodem.relaySim.data.BitFieldBuilder;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

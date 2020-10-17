@@ -1,7 +1,7 @@
 package com.neodem.relaySim.core.assembler;
 
-import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.data.BitFieldBuilder;
+import com.neodem.relaySim.data.bitfield.BitField;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 /**

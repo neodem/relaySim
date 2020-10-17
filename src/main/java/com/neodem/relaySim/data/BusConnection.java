@@ -1,5 +1,7 @@
 package com.neodem.relaySim.data;
 
+import com.neodem.relaySim.data.bitfield.BitField;
+
 /**
  * Created by Vincent Fumo (neodem@gmail.com)
  * Created on 4/12/16

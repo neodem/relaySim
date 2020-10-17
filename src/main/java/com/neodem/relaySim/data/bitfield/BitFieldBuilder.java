@@ -1,4 +1,4 @@
-package com.neodem.relaySim.data;
+package com.neodem.relaySim.data.bitfield;
 
 /**
  * Created by Vincent Fumo (neodem@gmail.com)

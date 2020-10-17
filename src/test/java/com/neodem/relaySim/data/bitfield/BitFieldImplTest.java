@@ -1,5 +1,8 @@
-package com.neodem.relaySim.data;
+package com.neodem.relaySim.data.bitfield;
 
+import com.neodem.relaySim.data.bitfield.BitField;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
+import com.neodem.relaySim.data.bitfield.BitFieldImpl;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

@@ -1,6 +1,6 @@
 package com.neodem.relaySim.integration;
 
-import com.neodem.relaySim.data.BitFieldBuilder;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import com.neodem.relaySim.objects.component.alu.BusBasedALU;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.objects.component.register.RegularRegister;
