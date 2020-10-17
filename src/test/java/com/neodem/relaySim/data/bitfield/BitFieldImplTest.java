@@ -1,8 +1,5 @@
 package com.neodem.relaySim.data.bitfield;
 
-import com.neodem.relaySim.data.bitfield.BitField;
-import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
-import com.neodem.relaySim.data.bitfield.BitFieldImpl;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,6 +22,73 @@ public class BitFieldImplTest {
     @AfterMethod
     public void tearDown() throws Exception {
         bitField = null;
+    }
+
+    @Test
+    public void getAndSetShouldWork() {
+        assertThat(bitField.getBitAsBoolean(1)).isFalse();
+        bitField.setBit(1, true);
+        assertThat(bitField.getBitAsBoolean(1)).isTrue();
+    }
+
+    @Test
+    public void setBitsShouldWork() {
+        bitField.setBits(0,0,0,1);
+
+        assertThat(bitField.getBit(0)).isEqualTo(1);
+        assertThat(bitField.getBit(1)).isEqualTo(0);
+        assertThat(bitField.getBit(2)).isEqualTo(0);
+        assertThat(bitField.getBit(3)).isEqualTo(0);
+
+        bitField.setBits(0,1,1,1);
+
+        assertThat(bitField.getBit(0)).isEqualTo(1);
+        assertThat(bitField.getBit(1)).isEqualTo(1);
+        assertThat(bitField.getBit(2)).isEqualTo(1);
+        assertThat(bitField.getBit(3)).isEqualTo(0);
+    }
+
+    @Test
+    public void intValueShouldWork() {
+        bitField.setBits(0,1,1,1);
+        assertThat(bitField.intValue()).isEqualTo(7);
+    }
+
+    @Test
+    public void setToValueShouldWork() {
+        bitField.setToValue(7);
+
+        assertThat(bitField.getBit(0)).isEqualTo(1);
+        assertThat(bitField.getBit(1)).isEqualTo(1);
+        assertThat(bitField.getBit(2)).isEqualTo(1);
+        assertThat(bitField.getBit(3)).isEqualTo(0);
+    }
+
+    @Test
+    public void invertAllBitsShouldWork() {
+        bitField.setBits(1,0,0,1);
+
+        assertThat(bitField.getBit(0)).isEqualTo(1);
+        assertThat(bitField.getBit(1)).isEqualTo(0);
+        assertThat(bitField.getBit(2)).isEqualTo(0);
+        assertThat(bitField.getBit(3)).isEqualTo(1);
+
+        bitField.invertAllBits();
+
+        assertThat(bitField.getBit(0)).isEqualTo(0);
+        assertThat(bitField.getBit(1)).isEqualTo(1);
+        assertThat(bitField.getBit(2)).isEqualTo(1);
+        assertThat(bitField.getBit(3)).isEqualTo(0);
+    }
+
+    @Test
+    public void convertToBitsShouldConvertToArrayOfBits() {
+        int[] ints = bitField.convertToBits(7, 4);
+        assertThat(ints).hasSize(4);
+        assertThat(ints[0]).isEqualTo(1);
+        assertThat(ints[1]).isEqualTo(1);
+        assertThat(ints[2]).isEqualTo(1);
+        assertThat(ints[3]).isEqualTo(0);
     }
 
     @Test
@@ -94,7 +158,6 @@ public class BitFieldImplTest {
         assertThat(result.getBit(0)).isEqualTo(1);
         assertThat(result.getBit(1)).isEqualTo(1);
         assertThat(result.getBit(2)).isEqualTo(0);
-
     }
 
     @Test
@@ -121,6 +184,13 @@ public class BitFieldImplTest {
     public void createFromInt() throws Exception {
         BitField val = BitFieldBuilder.createFromInt(6);
         assertThat(val).isEqualTo(BitFieldBuilder.create(1,1,0));
+    }
+
+    @Test
+    public void shiftRightShouldWork() {
+        BitField field = BitFieldBuilder.create(1,0,0,1);
+        field.shiftRight(2);
+        assertThat(field).isEqualTo(BitFieldBuilder.create(1,0));
     }
 
     @Test

@@ -1,33 +1,19 @@
 package com.neodem.relaySim.data.bitfield;
 
-import com.neodem.relaySim.tools.BitTools;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 /**
  * Created by: Vincent Fumo (vincent_fumo@cable.comcast.com)
  * Created on: 10/17/20
  */
-public class BitFieldImpl  implements BitField {
+public class BitFieldImpl implements BitField {
 
-    // 0 is the LSB
-    private List<Boolean> data;
+    private BitSet bitSet;
     private int size;
-
-    /**
-     * copy constructor
-     *
-     * @param bitField the BitField to make a copy of
-     */
-    protected BitFieldImpl(BitField bitField) {
-        this(bitField.size());
-        for (int i = 0; i < size; i++) {
-            setBit(i, bitField.getBit(i));
-        }
-    }
 
     /**
      * init a new BitField with a given size and set all values to 0
@@ -36,17 +22,34 @@ public class BitFieldImpl  implements BitField {
      */
     protected BitFieldImpl(int size) {
         if (size < 1) throw new IllegalArgumentException("BitField should have a size of at least 1");
+        bitSet = new BitSet(size);
         this.size = size;
-        this.data = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            this.data.add(false);
-        }
     }
 
+    /**
+     * copy constructor
+     *
+     * @param bitField the BitField to make a copy of
+     */
+    protected BitFieldImpl(BitField bitField) {
+        this(bitField.size());
+        for (int i = 0; i < bitField.size(); i++) {
+            setBit(i, bitField.getBit(i));
+        }
+    }
 
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public void setBit(int index, boolean value) {
+        if (index < 0) throw new IndexOutOfBoundsException("index must be equal to or greater than 0");
+        if (index >= size) throw new IndexOutOfBoundsException("index must be less than size");
+
+        if (value) bitSet.set(index);
+        else bitSet.clear(index);
     }
 
     @Override
@@ -60,45 +63,35 @@ public class BitFieldImpl  implements BitField {
     }
 
     @Override
-    public void setBit(int index, boolean value) {
-        if(index < 0) throw new IndexOutOfBoundsException("index must be equal to or greater than 0");
-        if(index >= size) throw new IndexOutOfBoundsException("index must be less than size");
-        data.set(index, value);
-    }
-
-    @Override
     public void setBit(int index, int value) {
-        if(index < 0) throw new IndexOutOfBoundsException("index must be equal to or greater than 0");
-        if(index >= size) throw new IndexOutOfBoundsException("index must be less than size");
+        if (index < 0) throw new IndexOutOfBoundsException("index must be equal to or greater than 0");
+        if (index >= size) throw new IndexOutOfBoundsException("index must be less than size");
 
-        if(value != 1 || value != 0) throw new IllegalArgumentException("value may only be a 0 or 1");
+        if (value != 1 && value != 0) throw new IllegalArgumentException("value may only be a 0 or 1");
 
-        boolean val = true;
-        if (value == 0) val = false;
-        data.set(index, val);
+        if (value == 1) setBit(index, true);
+        else setBit(index, false);
     }
 
     @Override
     public void setToValue(int val) {
-        List<Integer> bits = BitTools.convertToList(val, size);
-        for (int i = 0; i < size; i++) {
-            setBit(i, bits.get(i));
+        int[] bits = convertToBits(val, size);
+        bitSet.clear();
+        for (int i = 0; i < bits.length; i++) {
+            setBit(i, bits[i]);
         }
     }
 
     @Override
     public void invertAllBits() {
-        for (int i = 0; i < size; i++) {
-            boolean newBit = !getBitAsBoolean(i);
-            setBit(i, newBit);
-        }
+        bitSet.flip(0, size);
     }
 
     @Override
-    public boolean getBitAsBoolean(int pos) {
-        if (pos >= size)
-            throw new IllegalArgumentException(String.format("trying to get bit %d of a %d bit field", pos, size));
-        return data.get(pos);
+    public boolean getBitAsBoolean(int index) {
+        if (index >= size)
+            throw new IllegalArgumentException(String.format("trying to get bit %d of a %d bit field", index, size));
+        return bitSet.get(index);
     }
 
     @Override
@@ -111,7 +104,17 @@ public class BitFieldImpl  implements BitField {
 
     @Override
     public int intValue() {
-        return BitTools.makeInt(data);
+        int result = 0;
+
+        for (int i = 0; i < size; i++) {
+            boolean bit = getBitAsBoolean(i);
+            if (bit) {
+                double pow = Math.pow(2, i);
+                result += pow;
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -119,7 +122,7 @@ public class BitFieldImpl  implements BitField {
         StringBuffer b = new StringBuffer();
 
         for (int i = size - 1; i >= 0; i--) {
-            boolean val = data.get(i);
+            boolean val = getBitAsBoolean(i);
             if (val) b.append('1');
             else b.append('0');
         }
@@ -183,7 +186,7 @@ public class BitFieldImpl  implements BitField {
         int bitsToAdd = fieldToAddToTheRight.size();
         shiftLeft(bitsToAdd);
         for (int i = 0; i < bitsToAdd; i++) {
-            data.set(i, fieldToAddToTheRight.getBitAsBoolean(i));
+            setBit(i, fieldToAddToTheRight.getBitAsBoolean(i));
         }
     }
 
@@ -196,33 +199,31 @@ public class BitFieldImpl  implements BitField {
 
         // shift old stuff left
         for (int i = oldSize - 1; i >= 0; i--) {
-            Boolean value = data.get(i);
-            data.set(i + offset, value);
+            Boolean value = getBitAsBoolean(i);
+            setBit(i + offset, value);
         }
 
-        // pad with 0 for stuff moved
-        for (int i = 0; i < numberToShift; i++) {
-            data.set(i, false);
-        }
+        // pad
+        bitSet.clear(0, numberToShift);
     }
 
     @Override
-    public void rightShift(int numberToShift) {
-
+    public void shiftRight(int numberToShift) {
+        for (int i = 0; i < numberToShift; i++) {
+            Boolean value = getBitAsBoolean(i + numberToShift);
+            setBit(i, value);
+        }
+        resize(size - numberToShift);
     }
 
     @Override
     public void resize(int newSize) {
         if (newSize > size) {
-            int bitsToAdd = newSize - size;
-            for (int i = 0; i < bitsToAdd; i++) {
-                data.add(size + i, false);
-            }
             this.size = newSize;
         } else if (newSize < size) {
             int bitsToRemove = size - newSize;
             for (int i = 0; i < bitsToRemove; i++) {
-                data.remove(size - i - 1);
+                bitSet.clear(size - i - 1);
             }
             this.size = newSize;
         }
@@ -260,16 +261,41 @@ public class BitFieldImpl  implements BitField {
         BitFieldImpl bitField = (BitFieldImpl) o;
 
         return new EqualsBuilder()
-                .append(size, bitField.size)
-                .append(data, bitField.data)
+                .append(bitSet, bitField.bitSet)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(271, 151)
-                .append(data)
-                .append(size)
+                .append(bitSet)
                 .toHashCode();
+    }
+
+    /**
+     * will take an integer value and return
+     *
+     * @param value
+     * @return
+     * @paraam len
+     */
+    protected int[] convertToBits(int value, int len) {
+        double pow = Math.pow(2, len);
+        if (pow < value) {
+            throw new IllegalArgumentException("The Value is too big for a " + len + " bit long String");
+        }
+
+        int[] result = new int[len];
+        int shift = len - 1;
+        for (int i = 1; shift >= 0; shift--, i++) {
+            int bit = (value >> shift) & 1;
+            if (bit == 1) {
+                result[len - i] = 1;
+            } else {
+                result[len - i] = 0;
+            }
+        }
+
+        return result;
     }
 }

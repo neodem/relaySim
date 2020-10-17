@@ -18,8 +18,8 @@ public interface BitField {
     int size();
 
     /**
-     * set all values of the BitField with the rightmost value being index 0.
-     * example set(0,0,0,1) would set bit0 == 1
+     * set all values of the BitField with the rightmost value being index 0 (LSB).
+     * example set(0,0,0,1) would set bit0 == 1 and bit3 == 0
      *
      * @param values the values to set the BitField (only 0 and 1 are accepted)
      * @return the BitField
@@ -136,7 +136,7 @@ public interface BitField {
      *
      * @param numberToShift the number of bits to shift
      */
-    void rightShift(int numberToShift);
+    void shiftRight(int numberToShift);
 
     /**
      * resize, but trimming/adding to the MSB side

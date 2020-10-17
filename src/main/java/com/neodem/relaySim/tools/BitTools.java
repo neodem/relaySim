@@ -35,44 +35,9 @@ public class BitTools {
         return binary.toString();
     }
 
-    /**
-     * @param value
-     * @return
-     * @paraam len
-     */
-    public static List<Integer> convertToList(int value, int len) {
-        double pow = Math.pow(2, len);
-        if (pow < value) {
-            throw new IllegalArgumentException("The Value is too big for a " + len + " bit long String");
-        }
 
-        List<Integer> result = new ArrayList<>(len);
-        int shift = len - 1;
-        for (; shift >= 0; shift--) {
-            int bit = (value >> shift) & 1;
-            if (bit == 1) {
-                result.add(0,1);
-            } else {
-                result.add(0,0);
-            }
-        }
 
-        return result;
-    }
 
-    public static int makeInt(List<Boolean> data) {
-        int result = 0;
-
-        for(int i=0; i<data.size(); i++) {
-            boolean bit = data.get(i);
-            if(bit) {
-                double pow = Math.pow(2, i);
-                result += pow;
-            }
-        }
-
-        return result;
-    }
 
     public static boolean bit(int bitIndex, int value) {
         int mask =  1 << bitIndex;
