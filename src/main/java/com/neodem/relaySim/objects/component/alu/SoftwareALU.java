@@ -80,8 +80,8 @@ public class SoftwareALU implements ALU {
         BitField out =  BitFieldBuilder.createWithSize(aluSize);
 
         for (int i = 0; i < a.size(); i++) {
-            boolean bitA = a.getBitAsBoolean(i);
-            boolean bitB = b.getBitAsBoolean(i);
+            boolean bitA = a.getBit(i);
+            boolean bitB = b.getBit(i);
             boolean result = function.apply(bitA, bitB);
             out.setBit(i, result);
         }
@@ -101,8 +101,8 @@ public class SoftwareALU implements ALU {
         boolean carry = carryIn;
 
         for (int i = 0; i < a.size(); i++) {
-            boolean bitA = a.getBitAsBoolean(i);
-            boolean bitB = b.getBitAsBoolean(i);
+            boolean bitA = a.getBit(i);
+            boolean bitB = b.getBit(i);
             boolean result = add(bitA, bitB, carry);
             out.setBit(i, result);
 

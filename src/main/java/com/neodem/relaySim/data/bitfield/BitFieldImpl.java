@@ -3,6 +3,7 @@ package com.neodem.relaySim.data.bitfield;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class BitFieldImpl implements BitField {
     protected BitFieldImpl(BitField bitField) {
         this(bitField.size());
         for (int i = 0; i < bitField.size(); i++) {
-            setBit(i, bitField.getBit(i));
+            setBit(i, bitField.getBitAsInt(i));
         }
     }
 
@@ -88,17 +89,17 @@ public class BitFieldImpl implements BitField {
     }
 
     @Override
-    public boolean getBitAsBoolean(int index) {
+    public boolean getBit(int index) {
         if (index >= size)
-            throw new IllegalArgumentException(String.format("trying to get bit %d of a %d bit field", index, size));
+            throw new IndexOutOfBoundsException(String.format("trying to get bit %d of a %d bit field", index, size));
         return bitSet.get(index);
     }
 
     @Override
-    public int getBit(int pos) {
+    public int getBitAsInt(int pos) {
         if (pos >= size)
-            throw new IllegalArgumentException(String.format("trying to get bit %d of a %d bit field", pos, size));
-        boolean bit = getBitAsBoolean(pos);
+            throw new IndexOutOfBoundsException(String.format("trying to get bit %d of a %d bit field", pos, size));
+        boolean bit = getBit(pos);
         return bit ? 1 : 0;
     }
 
@@ -107,7 +108,7 @@ public class BitFieldImpl implements BitField {
         int result = 0;
 
         for (int i = 0; i < size; i++) {
-            boolean bit = getBitAsBoolean(i);
+            boolean bit = getBit(i);
             if (bit) {
                 double pow = Math.pow(2, i);
                 result += pow;
@@ -122,7 +123,7 @@ public class BitFieldImpl implements BitField {
         StringBuffer b = new StringBuffer();
 
         for (int i = size - 1; i >= 0; i--) {
-            boolean val = getBitAsBoolean(i);
+            boolean val = getBit(i);
             if (val) b.append('1');
             else b.append('0');
         }
@@ -131,14 +132,19 @@ public class BitFieldImpl implements BitField {
     }
 
     @Override
+    public String toString() {
+        return asString();
+    }
+
+    @Override
     public BitField getLSBs(int digits) {
         if (digits >= size)
-            throw new IllegalArgumentException("can't get more bits (" + digits + ") than the size (" + size + ") of the field!");
+            throw new IndexOutOfBoundsException("can't get more bits (" + digits + ") than the size (" + size + ") of the field!");
 
         BitField result = new BitFieldImpl(digits);
 
         for (int i = 0; i < digits; i++) {
-            result.setBit(i, getBit(i));
+            result.setBit(i, getBitAsInt(i));
         }
 
         return result;
@@ -147,13 +153,13 @@ public class BitFieldImpl implements BitField {
     @Override
     public BitField getMSBs(int digits) {
         if (digits >= size)
-            throw new IllegalArgumentException("can't get more bits (" + digits + ") than the size (" + size + ") of the field!");
+            throw new IndexOutOfBoundsException("can't get more bits (" + digits + ") than the size (" + size + ") of the field!");
 
         BitField result = new BitFieldImpl(digits);
 
         for (int i = 0; i < digits; i++) {
             int j = size - digits + i;
-            result.setBit(i, getBit(j));
+            result.setBit(i, getBitAsInt(j));
         }
 
         return result;
@@ -169,13 +175,32 @@ public class BitFieldImpl implements BitField {
 
         int requestedSize = to - from + 1;
         if (requestedSize >= size)
-            throw new IllegalArgumentException("can't get more bits (" + requestedSize + ") than the size (" + size + ") of the field!");
+            throw new IndexOutOfBoundsException("can't get more bits (" + requestedSize + ") than the size (" + size + ") of the field!");
 
         BitField result = new BitFieldImpl(requestedSize);
 
         for (int i = 0; i < requestedSize; i++) {
             int j = from + i;
-            result.setBit(i, getBit(j));
+            result.setBit(i, getBitAsInt(j));
+        }
+
+        return result;
+    }
+
+    @Override
+    public BitField getSubFieldWithPadding(int from, int to) {
+        if (from > to)
+            throw new IllegalArgumentException("from needs to be less than to");
+
+        if (from == to)
+            throw new IllegalArgumentException("making from and to the same would return a subfield of size 0");
+
+        int requestedSize = to - from + 1;
+        BitField result = new BitFieldImpl(requestedSize);
+
+        for (int i = 0; i < requestedSize; i++) {
+            boolean value = bitSet.get(from + i);
+            result.setBit(i, value);
         }
 
         return result;
@@ -186,7 +211,7 @@ public class BitFieldImpl implements BitField {
         int bitsToAdd = fieldToAddToTheRight.size();
         shiftLeft(bitsToAdd);
         for (int i = 0; i < bitsToAdd; i++) {
-            setBit(i, fieldToAddToTheRight.getBitAsBoolean(i));
+            setBit(i, fieldToAddToTheRight.getBit(i));
         }
     }
 
@@ -199,7 +224,7 @@ public class BitFieldImpl implements BitField {
 
         // shift old stuff left
         for (int i = oldSize - 1; i >= 0; i--) {
-            Boolean value = getBitAsBoolean(i);
+            Boolean value = getBit(i);
             setBit(i + offset, value);
         }
 
@@ -210,7 +235,7 @@ public class BitFieldImpl implements BitField {
     @Override
     public void shiftRight(int numberToShift) {
         for (int i = 0; i < numberToShift; i++) {
-            Boolean value = getBitAsBoolean(i + numberToShift);
+            Boolean value = getBit(i + numberToShift);
             setBit(i, value);
         }
         resize(size - numberToShift);
@@ -236,20 +261,35 @@ public class BitFieldImpl implements BitField {
 
     @Override
     public List<Byte> getAsBytes() {
-        //        ListBasedBitField copy = this.copy();
-//
-//        // 0 is lsb, size is the msb
-//        Collection<Byte> bytes = new ArrayList<>();
-//
-//        while(copy.size() >= 8) {
-//            ListBasedBitField rightField = copy.getSubField(0,7);
-//
-//            // if field is greater than 8, pull out the rightmost 8 and make a byte from it.
-//            // take the result minus the 8 and do again recursivlye
-//        }
-//
-//        // if the field is less than 8, pad it with 0's and get byte and end
-        return null;
+        //0 is lsb, size is the msb
+        List<Byte> bytes = new ArrayList<>();
+
+        int divider = 8;
+        if(size > 8) divider = size;
+        int numberToGet = (divider % 8) + 1;
+
+        for (int i = 0; i < numberToGet; i++) {
+            int from = i * 8;
+            int to = from + 7;
+            BitField subField = getSubFieldWithPadding(from, to);
+            byte b = convertToByte(subField);
+            bytes.add(b);
+        }
+
+        return bytes;
+    }
+
+    public static byte convertToByte(BitField field) {
+        if (field.size() != 8) throw new IllegalArgumentException("field must be size 8");
+
+        byte b = 0;
+        for (int i = 0; i < 8; i++) {
+            if (field.getBit(i)) {
+                b |= 1 << (i % 8);
+            }
+        }
+
+        return b;
     }
 
     @Override

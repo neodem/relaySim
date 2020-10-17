@@ -64,7 +64,7 @@ public interface BitField {
      * @return a boolean for the bit (true == 1, false == 0)
      * @throws IndexOutOfBoundsException if you ask for a bit our of range
      */
-    boolean getBitAsBoolean(int index);
+    boolean getBit(int index);
 
     /**
      * get a given bit as a 0 or 1
@@ -73,7 +73,7 @@ public interface BitField {
      * @return a value for the bit (1 == 1, 0 == 0)
      * @throws IndexOutOfBoundsException if you ask for a bit our of range
      */
-    int getBit(int index);
+    int getBitAsInt(int index);
 
     /**
      * get the field as an integer
@@ -114,6 +114,16 @@ public interface BitField {
      * @throws IndexOutOfBoundsException if you ask for a bit our of range
      */
     BitField getSubField(int from, int to);
+
+    /**
+     * return a new BitField. Inclusive
+     *
+     * @param from index of the from (0==LSB)
+     * @param to   index of the to (if > size then we pad with 0's)
+     * @return a new BitField of the chosen bits
+     * @throws IndexOutOfBoundsException if you ask for a bit our of range
+     */
+    BitField getSubFieldWithPadding(int from, int to);
 
     /**
      * a convenience method to add to the LS Bits of the BitField.

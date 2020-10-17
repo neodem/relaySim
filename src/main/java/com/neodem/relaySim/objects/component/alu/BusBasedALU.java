@@ -202,8 +202,8 @@ public class BusBasedALU extends Component implements BusListener {
      */
     protected boolean doAddition(BitField a, BitField b, boolean carry) {
         for (int i = 0; i < a.size(); i++) {
-            boolean bitA = a.getBitAsBoolean(i);
-            boolean bitB = b.getBitAsBoolean(i);
+            boolean bitA = a.getBit(i);
+            boolean bitB = b.getBit(i);
             boolean result = add(bitA, bitB, carry);
             carry = carry(bitA, bitB, carry);
             out.setBit(i, result);
@@ -213,8 +213,8 @@ public class BusBasedALU extends Component implements BusListener {
 
     protected void process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
         for (int i = 0; i < a.size(); i++) {
-            boolean bitA = a.getBitAsBoolean(i);
-            boolean bitB = b.getBitAsBoolean(i);
+            boolean bitA = a.getBit(i);
+            boolean bitB = b.getBit(i);
 
             out.setBit(i, function.apply(bitA, bitB));
         }
@@ -246,11 +246,11 @@ public class BusBasedALU extends Component implements BusListener {
     }
 
     private boolean decodeBInvert(BitField control) {
-        return control.getBitAsBoolean(1);
+        return control.getBit(1);
     }
 
     private boolean decodeCarryIn(BitField control) {
-        return control.getBitAsBoolean(0);
+        return control.getBit(0);
     }
 
     private String getStateString(BitField inA, BitField inB, ALUOperation op, boolean bInv, boolean carryIn, BitField out) {

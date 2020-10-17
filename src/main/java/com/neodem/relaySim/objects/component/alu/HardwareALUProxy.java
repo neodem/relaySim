@@ -35,7 +35,7 @@ public class HardwareALUProxy implements ALU {
         BitField received = receiveFromHardware();
 
         if (received != null) {
-            result = new ALUResult(received.getSubField(0, 3), received.getBitAsBoolean(4));
+            result = new ALUResult(received.getSubField(0, 3), received.getBit(4));
         }
 
         return result;
@@ -76,7 +76,7 @@ public class HardwareALUProxy implements ALU {
         // send data
         try {
             for (int i = 0; i < input.size(); i++) {
-                sp.getOutputStream().write(input.getBit(i));
+                sp.getOutputStream().write(input.getBitAsInt(i));
                 sp.getOutputStream().flush();
                 Thread.sleep(100);
             }
