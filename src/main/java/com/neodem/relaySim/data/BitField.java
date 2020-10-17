@@ -50,7 +50,7 @@ public interface BitField {
      * @param val
      * @return
      */
-    void setValue(int val);
+    void setToValue(int val);
 
     /**
      * invert all the bits

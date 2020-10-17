@@ -99,7 +99,7 @@ public class BitTools {
 
         for(int i=0 ; i < number ; i++) {
             BitField field = BitFieldBuilder.createWithSize(size);
-            field.setValue(i);
+            field.setToValue(i);
             allFields.add(field);
         }
 

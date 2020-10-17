@@ -88,20 +88,18 @@ public class BitFieldBuilder {
         return result;
     }
 
-    private static class BitFieldImpl implements BitField {
-
+    protected static class BitFieldImpl implements BitField {
 
         // 0 is the LSB
         private List<Boolean> data;
         private int size;
-
 
         /**
          * copy constructor
          *
          * @param bitField the BitField to make a copy of
          */
-        private BitFieldImpl(BitField bitField) {
+        protected BitFieldImpl(BitField bitField) {
             this(bitField.size());
             for (int i = 0; i < size; i++) {
                 setBit(i, bitField.getBit(i));
@@ -113,7 +111,7 @@ public class BitFieldBuilder {
          *
          * @param size the size of the BitField
          */
-        private BitFieldImpl(int size) {
+        protected BitFieldImpl(int size) {
             if (size < 1) throw new IllegalArgumentException("BitField should have a size of at least 1");
             this.size = size;
             this.data = new ArrayList<>(size);
@@ -139,23 +137,26 @@ public class BitFieldBuilder {
         }
 
         @Override
-        public void setBit(int pos, boolean value) {
-            if (pos >= size)
-                throw new IllegalArgumentException(String.format("trying to set bit %d of a %d bit field", pos, size));
-            data.set(pos, value);
+        public void setBit(int index, boolean value) {
+            if(index < 0) throw new IndexOutOfBoundsException("index must be equal to or greater than 0");
+            if(index >= size) throw new IndexOutOfBoundsException("index must be less than size");
+            data.set(index, value);
         }
 
         @Override
-        public void setBit(int pos, int value) {
-            if (pos >= size)
-                throw new IllegalArgumentException(String.format("trying to set bit %d of a %d bit field", pos, size));
+        public void setBit(int index, int value) {
+            if(index < 0) throw new IndexOutOfBoundsException("index must be equal to or greater than 0");
+            if(index >= size) throw new IndexOutOfBoundsException("index must be less than size");
+
+            if(value != 1 || value != 0) throw new IllegalArgumentException("value may only be a 0 or 1");
+
             boolean val = true;
             if (value == 0) val = false;
-            data.set(pos, val);
+            data.set(index, val);
         }
 
         @Override
-        public void setValue(int val) {
+        public void setToValue(int val) {
             List<Integer> bits = BitTools.convertToList(val, size);
             for (int i = 0; i < size; i++) {
                 setBit(i, bits.get(i));

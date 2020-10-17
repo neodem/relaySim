@@ -10,13 +10,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by Vincent Fumo (neodem@gmail.com)
  * Created on 4/10/16
  */
-public class ListBasedBitFieldTest {
+public class BitFieldImplTest {
 
-    private BitField bitField;
+    private BitFieldBuilder.BitFieldImpl bitField;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        bitField = BitFieldBuilder.createWithSize(4);
+        bitField = new BitFieldBuilder.BitFieldImpl(4);
     }
 
     @AfterMethod
