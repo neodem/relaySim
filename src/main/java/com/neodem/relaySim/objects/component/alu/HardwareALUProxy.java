@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * proxy to our 4 bit hardware ALU (connected over USB)
@@ -20,7 +21,7 @@ public class HardwareALUProxy implements ALU {
 
     @Override
     public ALUResult operate(boolean s0, boolean s1, boolean cIn, boolean bInv, BitField a, BitField b) {
-        BitField input = BitFieldBuilder.combine(BitFieldBuilder.create(s0, s1, cIn, bInv), a, b);
+        BitField input = BitFieldBuilder.combineShiftLeft(BitFieldBuilder.create(s0, s1, cIn, bInv), a, b);
         ALUResult result = communeWithHardware(input);
         return result;
     }
@@ -50,9 +51,8 @@ public class HardwareALUProxy implements ALU {
         openPort(sp);
 
         // get data
+        byte[] readBuffer = new byte[1];
         try {
-            byte[] readBuffer = new byte[1];
-
             // this should block until it gets its one byte
             int numRead = sp.readBytes(readBuffer, readBuffer.length);
             logger.info("Read " + numRead + " bytes.");
@@ -62,7 +62,9 @@ public class HardwareALUProxy implements ALU {
 
         closePort(sp);
 
-        return null;
+        BitField bitField = BitFieldBuilder.createFromBytes(readBuffer);
+
+        return bitField;
     }
 
     private void sendToHardware(BitField input) {
@@ -73,10 +75,12 @@ public class HardwareALUProxy implements ALU {
 
         openPort(sp);
 
+        List<Byte> bytesToWrite = input.getAsBytes();
+
         // send data
         try {
-            for (int i = 0; i < input.size(); i++) {
-                sp.getOutputStream().write(input.getBitAsInt(i));
+            for (Byte b : bytesToWrite) {
+                sp.getOutputStream().write(b);
                 sp.getOutputStream().flush();
                 Thread.sleep(100);
             }

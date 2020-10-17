@@ -227,7 +227,7 @@ public class BitFieldImplTest {
         BitField second = BitFieldBuilder.create(0,1,1);
         BitField third = BitFieldBuilder.create(1,1,1,1);
 
-        BitField combined = BitFieldBuilder.combine(first, second, third);
+        BitField combined = BitFieldBuilder.combineShiftLeft(first, second, third);
         assertThat(combined).isEqualTo(BitFieldBuilder.create(0,0,0,1,0, 0,1,1, 1,1,1,1));
     }
 

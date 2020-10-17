@@ -53,7 +53,9 @@ public class BitFieldBuilder {
     }
 
     /**
-     * make a new BF by combining multiple BFs by placing them next to each other. The first one
+     * make a new BF by combining multiple BFs by adding then shifting left to accomodate the next one
+     *
+     * eg. placing them next to each other. The first one
      * will be on the left
      * <p>
      * Example:
@@ -67,7 +69,7 @@ public class BitFieldBuilder {
      * @param fields
      * @return
      */
-    public static BitField combine(BitField... fields) {
+    public static BitField combineShiftLeft(BitField... fields) {
         BitField result = new BitFieldImpl(fields[0]);
 
         for (int i = 1; i < fields.length; i++) {
@@ -75,5 +77,23 @@ public class BitFieldBuilder {
         }
 
         return result;
+    }
+
+    /**
+     * will create a bitField from the given bytes. it will have a size of 8 * bytes.length. Each byte
+     * after the first one will shift everything left and then do it's add.. Thus, the first byte in this
+     * array is the MSB.
+     *
+     * @param bytes
+     * @return
+     */
+    public static BitField createFromBytes(byte... bytes) {
+        BitField[] bitFields = new BitField[bytes.length];
+
+        for(int i =0 ; i < bytes.length; i++) {
+            bitFields[i] = createFromInt(bytes[i], 8);
+        }
+
+        return combineShiftLeft(bitFields);
     }
 }
