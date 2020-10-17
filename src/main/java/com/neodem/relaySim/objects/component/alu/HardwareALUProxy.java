@@ -110,7 +110,10 @@ public class HardwareALUProxy implements ALU {
     }
 
     private SerialPort getSerialPort() {
-        SerialPort sp = SerialPort.getCommPort("/dev/ttyACM1");
+        SerialPort[] commPorts = SerialPort.getCommPorts();
+
+
+        SerialPort sp = commPorts[1];
 
         // default connection settings for Arduino
         sp.setComPortParameters(9600, 8, 1, 0);
