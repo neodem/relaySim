@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class BitFieldImplTest {
 
-    private BitFieldBuilder.BitFieldImpl bitField;
+    private BitFieldImpl bitField;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        bitField = new BitFieldBuilder.BitFieldImpl(4);
+        bitField = new BitFieldImpl(4);
     }
 
     @AfterMethod
