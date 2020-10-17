@@ -1,7 +1,7 @@
 package com.neodem.relaySim.tools;
 
 import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +98,7 @@ public class BitTools {
         List<BitField> allFields = new ArrayList<>();
 
         for(int i=0 ; i < number ; i++) {
-            BitField field = new ListBasedBitField(size);
+            BitField field = BitFieldBuilder.createWithSize(size);
             field.setValue(i);
             allFields.add(field);
         }

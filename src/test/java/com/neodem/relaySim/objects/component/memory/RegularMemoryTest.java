@@ -1,8 +1,7 @@
 package com.neodem.relaySim.objects.component.memory;
 
-import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.data.Bus;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -39,7 +38,7 @@ public class RegularMemoryTest {
     @Test
     public void memoryShouldInitToZero() throws Exception {
         for (int i = 0; i < 100; i++) {
-            addressBus.updateData(ListBasedBitField.createFromInt(i));
+            addressBus.updateData(BitFieldBuilder.createFromInt(i));
             mem.read(true);
             assertThat(dataBus.getData().intValue()).isEqualTo(0);
         }
@@ -47,11 +46,11 @@ public class RegularMemoryTest {
 
     @Test
     public void memoryShouldStoreValue() throws Exception {
-        addressBus.updateData(ListBasedBitField.createFromInt(7));
+        addressBus.updateData(BitFieldBuilder.createFromInt(7));
         mem.read(true);
         assertThat(dataBus.getData().intValue()).isEqualTo(0);
 
-        dataBus.updateData(ListBasedBitField.create(1, 0, 0, 1));
+        dataBus.updateData(BitFieldBuilder.create(1, 0, 0, 1));
         mem.write(true);
 
         mem.read(true);

@@ -2,7 +2,7 @@ package com.neodem.relaySim.core.assembler;
 
 import com.neodem.relaySim.core.MemoryBlock;
 import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -24,17 +24,17 @@ import java.util.List;
  */
 public class Assembler {
 
-    private final static BitField DEFAULT_START = ListBasedBitField.create(0,0,0,0, 0,0,0,1, 0,0,0,0);
+    private final static BitField DEFAULT_START = BitFieldBuilder.create(0,0,0,0, 0,0,0,1, 0,0,0,0);
 
-    private final static BitField LDA_IMMEDIATE = ListBasedBitField.create(0,0,0,1);
-    private final static BitField LDA_ADDRESS   = ListBasedBitField.create(0,0,1,0);
+    private final static BitField LDA_IMMEDIATE = BitFieldBuilder.create(0,0,0,1);
+    private final static BitField LDA_ADDRESS   = BitFieldBuilder.create(0,0,1,0);
 
-    private final static BitField ADC_IMMEDIATE = ListBasedBitField.create(0,0,1,1);
-    private final static BitField ADC_ADDRESS   = ListBasedBitField.create(0,1,0,0);
+    private final static BitField ADC_IMMEDIATE = BitFieldBuilder.create(0,0,1,1);
+    private final static BitField ADC_ADDRESS   = BitFieldBuilder.create(0,1,0,0);
 
-    private final static BitField STA_ADDRESS   = ListBasedBitField.create(0,1,0,1);
+    private final static BitField STA_ADDRESS   = BitFieldBuilder.create(0,1,0,1);
 
-    private final static BitField HLT           = ListBasedBitField.create(0,0,0,0);
+    private final static BitField HLT           = BitFieldBuilder.create(0,0,0,0);
 
     private BitField org;
     private List<BitField> data = new ArrayList<>();
@@ -64,9 +64,9 @@ public class Assembler {
 
     private void handleHLT() {
         data.add(HLT.copy());
-        data.add(ListBasedBitField.create(0,0,0,0));
-        data.add(ListBasedBitField.create(0,0,0,0));
-        data.add(ListBasedBitField.create(0,0,0,0));
+        data.add(BitFieldBuilder.create(0,0,0,0));
+        data.add(BitFieldBuilder.create(0,0,0,0));
+        data.add(BitFieldBuilder.create(0,0,0,0));
     }
 
     private void handleLDA(AsmParam param) {
@@ -75,8 +75,8 @@ public class Assembler {
             BitField copy = param.getImmediate().copy();
             copy.resize(4);
             data.add(copy);
-            data.add(ListBasedBitField.create(0,0,0,0));
-            data.add(ListBasedBitField.create(0,0,0,0));
+            data.add(BitFieldBuilder.create(0,0,0,0));
+            data.add(BitFieldBuilder.create(0,0,0,0));
         } else if(param.isAddress()) {
             data.add(LDA_ADDRESS.copy());
             data.add(param.getAddress().getMSBs(4));
@@ -91,8 +91,8 @@ public class Assembler {
             BitField copy = param.getImmediate().copy();
             copy.resize(4);
             data.add(copy);
-            data.add(ListBasedBitField.create(0,0,0,0));
-            data.add(ListBasedBitField.create(0,0,0,0));
+            data.add(BitFieldBuilder.create(0,0,0,0));
+            data.add(BitFieldBuilder.create(0,0,0,0));
         } else if(param.isAddress()) {
             data.add(ADC_ADDRESS.copy());
             data.add(param.getAddress().getMSBs(4));

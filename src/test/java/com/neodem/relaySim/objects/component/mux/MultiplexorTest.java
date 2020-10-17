@@ -1,8 +1,7 @@
 package com.neodem.relaySim.objects.component.mux;
 
-import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.data.Bus;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -45,12 +44,12 @@ public class MultiplexorTest {
 
     @Test
     public void testSwitching() throws Exception {
-        input0.updateData(ListBasedBitField.createFromInt(9,4));
-        input1.updateData(ListBasedBitField.createFromInt(1,4));
+        input0.updateData(BitFieldBuilder.createFromInt(9,4));
+        input1.updateData(BitFieldBuilder.createFromInt(1,4));
         mux.setSelected(true);
-        assertThat(output).isEqualTo(ListBasedBitField.createFromInt(1,4));
+        assertThat(output).isEqualTo(BitFieldBuilder.createFromInt(1,4));
         mux.setSelected(false);
-        assertThat(output).isEqualTo(ListBasedBitField.createFromInt(9,4));
+        assertThat(output).isEqualTo(BitFieldBuilder.createFromInt(9,4));
 
     }
 }

@@ -24,7 +24,7 @@ public class Bus extends Component {
     }
 
     public void init() {
-        data = new ListBasedBitField(size);
+        data = BitFieldBuilder.createWithSize(size);
     }
 
     public void addListener(BusListener c) {

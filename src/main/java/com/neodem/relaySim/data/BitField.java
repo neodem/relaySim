@@ -29,20 +29,20 @@ public interface BitField {
     /**
      * set a given bit in the field
      *
-     * @param pos
+     * @param index
      * @param value true == 1, false == 0
      * @throws IndexOutOfBoundsException if you try to set a bit greater than the size of the field
      */
-    void setBit(int pos, boolean value);
+    void setBit(int index, boolean value);
 
     /**
      * set a given bit in the field
      *
-     * @param pos
+     * @param index
      * @param value (only 0 and 1 are accepted)
      * @throws IndexOutOfBoundsException if you try to set a bit greater than the size of the field
      */
-    void setBit(int pos, int value);
+    void setBit(int index, int value);
 
     /**
      * replace all values of the bitfield with this integer value
@@ -60,20 +60,20 @@ public interface BitField {
     /**
      * get a given bit as a boolean
      *
-     * @param pos
+     * @param index
      * @return a boolean for the bit (true == 1, false == 0)
      * @throws IndexOutOfBoundsException if you ask for a bit our of range
      */
-    boolean getBitAsBoolean(int pos);
+    boolean getBitAsBoolean(int index);
 
     /**
      * get a given bit as a 0 or 1
      *
-     * @param pos
+     * @param index
      * @return a value for the bit (1 == 1, 0 == 0)
      * @throws IndexOutOfBoundsException if you ask for a bit our of range
      */
-    int getBit(int pos);
+    int getBit(int index);
 
     /**
      * get the field as an integer

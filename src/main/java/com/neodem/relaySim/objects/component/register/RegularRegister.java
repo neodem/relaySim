@@ -2,7 +2,7 @@ package com.neodem.relaySim.objects.component.register;
 
 import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.data.Bus;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 import com.neodem.relaySim.objects.component.Component;
 
 /**
@@ -28,7 +28,7 @@ public class RegularRegister extends Component implements Register {
         if (!initCalled)
             throw new RuntimeException("init has not been called! This component has not been initialized!");
         if (selected && write) {
-            input = new ListBasedBitField(inBus.getData());
+            input = inBus.getData().copy();
             outBus.updateData(input);
         }
     }
@@ -36,7 +36,7 @@ public class RegularRegister extends Component implements Register {
     @Override
     public void init() {
         super.init();
-        input = ListBasedBitField.createFromInt(0);
+        input = BitFieldBuilder.createFromInt(0);
         outBus.updateData(input);
     }
 

@@ -1,9 +1,7 @@
 package com.neodem.relaySim.objects.component.mux;
 
-import com.neodem.relaySim.data.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
-import com.neodem.relaySim.data.ListBasedBitField;
 import com.neodem.relaySim.objects.component.Component;
 
 /**
@@ -40,8 +38,8 @@ public class Multiplexor extends Component implements BusListener {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        if(this.selected) output.updateData(new ListBasedBitField(input1.getData()));
-        else output.updateData(new ListBasedBitField(input0.getData()));
+        if(this.selected) output.updateData(input1.getData().copy());
+        else output.updateData(input0.getData().copy());
     }
 
     public Bus getInput0() {

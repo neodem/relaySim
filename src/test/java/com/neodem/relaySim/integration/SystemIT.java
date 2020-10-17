@@ -1,7 +1,6 @@
 package com.neodem.relaySim.integration;
 
-import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 import com.neodem.relaySim.objects.component.alu.BusBasedALU;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.objects.component.register.RegularRegister;
@@ -45,10 +44,10 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
         assertThat(accumulatorOut.getData().intValue()).isEqualTo(0);
 
         // set ALU operation to ADD with no carryIn
-        aluControl.updateData(ListBasedBitField.create(0,0,0,0));
+        aluControl.updateData(BitFieldBuilder.create(0,0,0,0));
 
         // load 1,0,0,1 into B side of ALU
-        aluBin.updateData(ListBasedBitField.create(1,0,0,1));
+        aluBin.updateData(BitFieldBuilder.create(1,0,0,1));
 
         // store output of the ALU (which is wired into the accumulator)
 
@@ -56,6 +55,6 @@ public class SystemIT extends AbstractTestNGSpringContextTests {
         accumulator.write(true);
 
         // check ALU out (should have the new value/out from the ALU)
-        assertThat(accumulatorOut.getData()).isEqualTo(ListBasedBitField.create(1,0,0,1));
+        assertThat(accumulatorOut.getData()).isEqualTo(BitFieldBuilder.create(1,0,0,1));
     }
 }

@@ -2,7 +2,7 @@ package com.neodem.relaySim.objects.component.alu;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.neodem.relaySim.data.BitField;
-import com.neodem.relaySim.data.ListBasedBitField;
+import com.neodem.relaySim.data.BitFieldBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ public class HardwareALUProxy implements ALU {
 
     @Override
     public ALUResult operate(boolean s0, boolean s1, boolean cIn, boolean bInv, BitField a, BitField b) {
-        BitField input = ListBasedBitField.combine(ListBasedBitField.create(s0, s1, cIn, bInv), a, b);
+        BitField input = BitFieldBuilder.combine(BitFieldBuilder.create(s0, s1, cIn, bInv), a, b);
         ALUResult result = communeWithHardware(input);
         return result;
     }

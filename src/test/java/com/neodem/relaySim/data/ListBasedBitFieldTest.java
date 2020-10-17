@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ListBasedBitFieldTest {
 
-    private ListBasedBitField bitField;
+    private BitField bitField;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        bitField = new ListBasedBitField(4);
+        bitField = BitFieldBuilder.createWithSize(4);
     }
 
     @AfterMethod
@@ -84,7 +84,7 @@ public class ListBasedBitFieldTest {
 
     @Test
     public void getSubFieldShouldWork() throws Exception {
-        BitField testField = ListBasedBitField.create(0,0,1,1,0,0);
+        BitField testField = BitFieldBuilder.create(0,0,1,1,0,0);
         BitField result = testField.getSubField(2,4);
 
         assertThat(result.size()).isEqualTo(3);
@@ -97,51 +97,51 @@ public class ListBasedBitFieldTest {
     @Test
     public void bitfieldsEqualsShouldWork() throws Exception {
         bitField.setBits(1, 0, 1, 1);
-        assertThat(bitField).isEqualTo(ListBasedBitField.create(1, 0, 1, 1));
+        assertThat(bitField).isEqualTo(BitFieldBuilder.create(1, 0, 1, 1));
     }
 
     @Test
     public void resizeSmallerShouldWork() throws Exception {
-        BitField bitField = ListBasedBitField.create(1, 0, 1, 1, 1, 0);
+        BitField bitField = BitFieldBuilder.create(1, 0, 1, 1, 1, 0);
         bitField.resize(4);
-        assertThat(bitField).isEqualTo(ListBasedBitField.create(1, 1, 1, 0));
+        assertThat(bitField).isEqualTo(BitFieldBuilder.create(1, 1, 1, 0));
     }
 
     @Test
     public void resizeBiggerShouldWork() throws Exception {
-        BitField bitField = ListBasedBitField.create(1, 0, 1, 1, 1, 0);
+        BitField bitField = BitFieldBuilder.create(1, 0, 1, 1, 1, 0);
         bitField.resize(10);
-        assertThat(bitField).isEqualTo(ListBasedBitField.create(0, 0, 0, 0, 1, 0, 1, 1, 1, 0));
+        assertThat(bitField).isEqualTo(BitFieldBuilder.create(0, 0, 0, 0, 1, 0, 1, 1, 1, 0));
     }
 
     @Test
     public void createFromInt() throws Exception {
-        BitField val = ListBasedBitField.createFromInt(6);
-        assertThat(val).isEqualTo(ListBasedBitField.create(1,1,0));
+        BitField val = BitFieldBuilder.createFromInt(6);
+        assertThat(val).isEqualTo(BitFieldBuilder.create(1,1,0));
     }
 
     @Test
     public void shiftLeftShouldWork() {
-        BitField field = ListBasedBitField.create(1,0,0,1);
+        BitField field = BitFieldBuilder.create(1,0,0,1);
         field.shiftLeft(3);
-        assertThat(field).isEqualTo(ListBasedBitField.create(1,0,0,1,0,0,0));
+        assertThat(field).isEqualTo(BitFieldBuilder.create(1,0,0,1,0,0,0));
     }
 
     @Test
     public void shiftAndAddToRightShouldWork() {
-        BitField field = ListBasedBitField.create(1,0,0,1);
-        field.shiftAndAddToRight(ListBasedBitField.create(1,1,1));
-        assertThat(field).isEqualTo(ListBasedBitField.create(1,0,0,1,1,1,1));
+        BitField field = BitFieldBuilder.create(1,0,0,1);
+        field.shiftAndAddToRight(BitFieldBuilder.create(1,1,1));
+        assertThat(field).isEqualTo(BitFieldBuilder.create(1,0,0,1,1,1,1));
     }
 
     @Test
     public void combineShouldCreateProperField() {
-        BitField first = ListBasedBitField.create(0,0,0,1,0);
-        BitField second = ListBasedBitField.create(0,1,1);
-        BitField third = ListBasedBitField.create(1,1,1,1);
+        BitField first = BitFieldBuilder.create(0,0,0,1,0);
+        BitField second = BitFieldBuilder.create(0,1,1);
+        BitField third = BitFieldBuilder.create(1,1,1,1);
 
-        BitField combined = ListBasedBitField.combine(first, second, third);
-        assertThat(combined).isEqualTo(ListBasedBitField.create(0,0,0,1,0, 0,1,1, 1,1,1,1));
+        BitField combined = BitFieldBuilder.combine(first, second, third);
+        assertThat(combined).isEqualTo(BitFieldBuilder.create(0,0,0,1,0, 0,1,1, 1,1,1,1));
     }
 
     /*
