@@ -18,8 +18,8 @@ public class RegisterConfig {
     private int dataWidth;
 
     @Bean
-    public Register accumulator(Bus accumulatorInputBus, Bus aluABus) {
-        RegularRegister register = new RegularRegister(dataWidth, "Accumulator", accumulatorInputBus);
+    public Register accumulator(Bus aluOutBus, Bus aluABus) {
+        RegularRegister register = new RegularRegister(dataWidth, "Accumulator", aluOutBus);
         register.setOutBus(aluABus);
 
         register.init();

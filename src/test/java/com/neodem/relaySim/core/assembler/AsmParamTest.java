@@ -15,7 +15,7 @@ public class AsmParamTest {
     public void createAddressShouldWork() throws Exception {
         AsmParam p = new AsmParam("$010");
         assertThat(p.isAddress()).isTrue();
-        assertThat(p.getAddress()).isEqualTo(BitFieldBuilder.create(0,0,0,0,0,0,0,1,0,0,0,0));
+        assertThat(p.getAddress()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0));
     }
 
     @Test

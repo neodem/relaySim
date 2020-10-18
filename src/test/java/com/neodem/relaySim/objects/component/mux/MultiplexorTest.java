@@ -44,12 +44,12 @@ public class MultiplexorTest {
 
     @Test
     public void testSwitching() throws Exception {
-        input0.updateData(BitFieldBuilder.createFromInt(9,4));
-        input1.updateData(BitFieldBuilder.createFromInt(1,4));
+        input0.updateData(BitFieldBuilder.createFromInt(9, 4));
+        input1.updateData(BitFieldBuilder.createFromInt(1, 4));
         mux.setSelected(true);
-        assertThat(output.getData()).isEqualTo(BitFieldBuilder.createFromInt(1,4));
+        assertThat(output.getData()).isEqualTo(BitFieldBuilder.createFromInt(1, 4));
         mux.setSelected(false);
-        assertThat(output.getData()).isEqualTo(BitFieldBuilder.createFromInt(9,4));
+        assertThat(output.getData()).isEqualTo(BitFieldBuilder.createFromInt(9, 4));
 
     }
 }

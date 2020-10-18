@@ -1,32 +1,23 @@
 package com.neodem.relaySim.objects.component.alu;
 
-import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
+import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import com.neodem.relaySim.objects.component.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.function.BiFunction;
-
 /**
- * control :
- * bit3 : s0
- * bit2 : s1
- * bit1 : bInv
- * bit0 : carryIn
+ * This will bridge the sofware interface over to the more formal hardware based interface
  * <p>
- * output
- * bit4 : carryOut
- * bit3-0 : data
- * <p>
+ * ALUOperation op, etc
  * <p>
  * Created by vfumo on 3/13/16.
  */
-public class BusBasedALU extends Component implements BusListener {
+public class BusBasedALUBridge extends Component implements BusListener {
 
-    private static Logger logger = LoggerFactory.getLogger(BusBasedALU.class);
+    private static Logger logger = LoggerFactory.getLogger(BusBasedALUBridge.class);
 
     private Bus aluAin;
     private Bus aluBin;
@@ -39,33 +30,12 @@ public class BusBasedALU extends Component implements BusListener {
     private BitField inB;
     private BitField control;
 
-    public BusBasedALU(int size, String name) {
+    private final ALU alu;
+
+    public BusBasedALUBridge(int size, String name, ALU alu) {
         super(size, name);
+        this.alu = alu;
         init();
-    }
-
-    protected static Boolean or(Boolean a, Boolean b) {
-        return a || b;
-    }
-
-    protected static Boolean and(Boolean a, Boolean b) {
-        return a && b;
-    }
-
-    protected static Boolean xor(Boolean a, Boolean b) {
-        if (a || b) return !(a && b);
-        return false;
-    }
-
-    protected static boolean add(boolean a, boolean b, boolean carry) {
-        boolean result = xor(a, b);
-        if (carry) return !result;
-        return result;
-    }
-
-    protected static boolean carry(boolean a, boolean b, boolean carry) {
-        if (carry) return (a || b);
-        return (a && b);
     }
 
     /**
@@ -109,10 +79,10 @@ public class BusBasedALU extends Component implements BusListener {
     }
 
     public void init() {
-        out =  BitFieldBuilder.createWithSize(size + 1);
-        inA =  BitFieldBuilder.createWithSize(size);
-        inB =  BitFieldBuilder.createWithSize(size);
-        control =  BitFieldBuilder.createWithSize(4);
+        out = BitFieldBuilder.createWithSize(size + 1);
+        inA = BitFieldBuilder.createWithSize(size);
+        inB = BitFieldBuilder.createWithSize(size);
+        control = BitFieldBuilder.createWithSize(4);
     }
 
     @Override
@@ -157,63 +127,33 @@ public class BusBasedALU extends Component implements BusListener {
         inB.resize(size);
     }
 
+    // ALUResult operate(boolean s0, boolean s1, boolean cIn, boolean bInv, BitField a, BitField b);
+
     protected BitField compute(BitField inA, BitField inB, ALUOperation op, boolean bInv, boolean carryIn) {
+        ALUResult result = null;
 
-        BitField actaulB = inB.copy();
-        if (bInv) {
-            actaulB.invertAllBits();
-        }
-
-        boolean carryOut = false;
         switch (op) {
             case ADD:
-                carryOut = doAddition(inA, actaulB, carryIn);
+                result = alu.operate(false, false, carryIn, bInv, inA, inB);
                 break;
             case OR:
-                process(inA, actaulB, BusBasedALU::or);
-                carryOut = false;
+                result = alu.operate(false, true, carryIn, bInv, inA, inB);
                 break;
             case AND:
-                process(inA, actaulB, BusBasedALU::and);
-                carryOut = false;
+                result = alu.operate(true, false, carryIn, bInv, inA, inB);
                 break;
             case XOR:
-                process(inA, actaulB, BusBasedALU::xor);
-                carryOut = false;
+                result = alu.operate(true, true, carryIn, bInv, inA, inB);
                 break;
         }
 
-        out.setBit(4, carryOut);
-        if (logger.isDebugEnabled()) {
-            logger.debug("compute() " + getStateString(inA, inB, op, bInv, carryIn, out));
+        if (result != null) {
+            out = result.getResult().copy();
+            out.resize(5);
+            out.setBit(4, result.isCarryOut());
         }
+
         return out;
-    }
-
-    /**
-     * @param a
-     * @param b
-     * @param carry
-     * @return true if we overflow
-     */
-    protected boolean doAddition(BitField a, BitField b, boolean carry) {
-        for (int i = 0; i < a.size(); i++) {
-            boolean bitA = a.getBit(i);
-            boolean bitB = b.getBit(i);
-            boolean result = add(bitA, bitB, carry);
-            carry = carry(bitA, bitB, carry);
-            out.setBit(i, result);
-        }
-        return carry;
-    }
-
-    protected void process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
-        for (int i = 0; i < a.size(); i++) {
-            boolean bitA = a.getBit(i);
-            boolean bitB = b.getBit(i);
-
-            out.setBit(i, function.apply(bitA, bitB));
-        }
     }
 
     private ALUOperation decodeOperation(BitField control) {
@@ -247,33 +187,6 @@ public class BusBasedALU extends Component implements BusListener {
 
     private boolean decodeCarryIn(BitField control) {
         return control.getBit(0);
-    }
-
-    private String getStateString(BitField inA, BitField inB, ALUOperation op, boolean bInv, boolean carryIn, BitField out) {
-        StringBuffer b = new StringBuffer();
-
-        b.append(op);
-        b.append(' ');
-        if (bInv) b.append('B');
-        else b.append(' ');
-        if (carryIn) b.append('C');
-        else b.append(' ');
-
-        b.append(' ');
-        b.append("a=");
-        b.append(inA);
-        b.append(' ');
-        b.append("b=");
-        b.append(inB);
-        b.append(' ');
-        b.append("o=");
-        b.append(out);
-
-        return b.toString();
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     public Bus getAluAin() {

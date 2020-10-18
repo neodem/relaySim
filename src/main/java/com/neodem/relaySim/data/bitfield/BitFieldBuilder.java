@@ -54,7 +54,7 @@ public class BitFieldBuilder {
 
     /**
      * make a new BF by combining multiple BFs by adding then shifting left to accomodate the next one
-     *
+     * <p>
      * eg. placing them next to each other. The first one
      * will be on the left
      * <p>
@@ -90,7 +90,7 @@ public class BitFieldBuilder {
     public static BitField createFromBytes(byte... bytes) {
         BitField[] bitFields = new BitField[bytes.length];
 
-        for(int i =0 ; i < bytes.length; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             bitFields[i] = createFromInt(bytes[i], 8);
         }
 

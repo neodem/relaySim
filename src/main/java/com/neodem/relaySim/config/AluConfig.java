@@ -1,9 +1,9 @@
 package com.neodem.relaySim.config;
 
 import com.neodem.relaySim.data.Bus;
-import com.neodem.relaySim.objects.component.Component;
-import com.neodem.relaySim.objects.component.alu.BusBasedALU;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.neodem.relaySim.objects.component.alu.ALU;
+import com.neodem.relaySim.objects.component.alu.BusBasedALUBridge;
+import com.neodem.relaySim.objects.component.alu.SoftwareALU;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +19,13 @@ public class AluConfig {
     private int dataWidth;
 
     @Bean
-    public Component alu(Bus aluABus, Bus aluBBus, Bus aluOutBus, Bus aluControlBus) {
-        BusBasedALU alu = new BusBasedALU(dataWidth, "ALU");
+    public ALU alu() {
+        return new SoftwareALU(dataWidth);
+    }
+
+    @Bean
+    public BusBasedALUBridge aluComponent(ALU actualALU, Bus aluABus, Bus aluBBus, Bus aluOutBus, Bus aluControlBus) {
+        BusBasedALUBridge alu = new BusBasedALUBridge(dataWidth, "ALU", actualALU);
         alu.setAluAin(aluABus);
         alu.setAluBin(aluBBus);
         alu.setAluControl(aluControlBus);

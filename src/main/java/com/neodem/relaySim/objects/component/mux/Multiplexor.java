@@ -27,14 +27,14 @@ public class Multiplexor extends Component implements BusListener {
 
     @Override
     public void dataChanged(Bus b) {
-        if((b.equals(input0) && !selected) || (b.equals(input1) && selected)) {
+        if ((b.equals(input0) && !selected) || (b.equals(input1) && selected)) {
             output.updateData(b.getData());
         }
     }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        if(this.selected) output.updateData(input1.getData().copy());
+        if (this.selected) output.updateData(input1.getData().copy());
         else output.updateData(input0.getData().copy());
     }
 

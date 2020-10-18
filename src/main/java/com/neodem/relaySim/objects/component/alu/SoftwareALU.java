@@ -17,10 +17,6 @@ public class SoftwareALU implements ALU {
 
     private final int aluSize;
 
-    public SoftwareALU() {
-        this(4);
-    }
-
     public SoftwareALU(int aluSize) {
         this.aluSize = aluSize;
     }
@@ -34,14 +30,14 @@ public class SoftwareALU implements ALU {
 
         ALUResult result;
 
-        if(s0) {
-            if(s1) {
+        if (s0) {
+            if (s1) {
                 result = process(a, actaulB, this::xor);
             } else {
                 result = process(a, actaulB, this::and);
             }
         } else {
-            if(s1) {
+            if (s1) {
                 result = process(a, actaulB, this::or);
             } else {
                 result = doAddition(a, actaulB, cIn);
@@ -77,7 +73,7 @@ public class SoftwareALU implements ALU {
     }
 
     protected ALUResult process(BitField a, BitField b, BiFunction<Boolean, Boolean, Boolean> function) {
-        BitField out =  BitFieldBuilder.createWithSize(aluSize);
+        BitField out = BitFieldBuilder.createWithSize(aluSize);
 
         for (int i = 0; i < a.size(); i++) {
             boolean bitA = a.getBit(i);

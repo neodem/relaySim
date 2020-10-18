@@ -15,9 +15,9 @@ import java.util.List;
  * Created by: Vincent Fumo (vincent_fumo@cable.comcast.com)
  * Created on: 10/15/20
  */
-public class HardwareALUProxy implements ALU {
+public class HardwareALU implements ALU {
 
-    private static Logger logger = LoggerFactory.getLogger(HardwareALUProxy.class);
+    private static Logger logger = LoggerFactory.getLogger(HardwareALU.class);
 
     @Override
     public ALUResult operate(boolean s0, boolean s1, boolean cIn, boolean bInv, BitField a, BitField b) {

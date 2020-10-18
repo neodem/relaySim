@@ -13,7 +13,7 @@ public class BitFieldBuilderTest {
     @Test
     public void createFromBytesShouldCreateFromOneByte() {
 
-        BitField result = BitFieldBuilder.createFromBytes((byte)7);
+        BitField result = BitFieldBuilder.createFromBytes((byte) 7);
 
         assertThat(result.size()).isEqualTo(8);
         assertThat(result.getBitAsInt(0)).isEqualTo(1);
@@ -25,10 +25,11 @@ public class BitFieldBuilderTest {
         assertThat(result.getBitAsInt(6)).isEqualTo(0);
         assertThat(result.getBitAsInt(7)).isEqualTo(0);
     }
+
     @Test
     public void createFromBytesShouldCreateFromTwoBytes() {
 
-        BitField result = BitFieldBuilder.createFromBytes((byte)7, (byte)5);
+        BitField result = BitFieldBuilder.createFromBytes((byte) 7, (byte) 5);
 
         assertThat(result.size()).isEqualTo(16);
         assertThat(result.getBitAsInt(0)).isEqualTo(1);

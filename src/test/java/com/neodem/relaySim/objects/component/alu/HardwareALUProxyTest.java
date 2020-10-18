@@ -1,17 +1,7 @@
 package com.neodem.relaySim.objects.component.alu;
 
-import com.neodem.relaySim.data.bitfield.BitField;
-import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
-import com.neodem.relaySim.tools.BitTools;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by: Vincent Fumo (vincent_fumo@cable.comcast.com)
@@ -19,11 +9,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HardwareALUProxyTest {
 
-    private HardwareALUProxy alu;
+    private HardwareALU alu;
 
     @BeforeTest
     public void before() {
-        alu = new HardwareALUProxy();
+        alu = new HardwareALU();
     }
 
     @AfterTest

@@ -39,5 +39,7 @@ public class RelaySim {
         // load the data into ram
         MemoryLoader loader = (SimpleMemoryLoader) context.getBean("memoryLoader");
         loader.loadData(block);
+
+
     }
 }

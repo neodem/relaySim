@@ -36,11 +36,8 @@ public class BitTools {
     }
 
 
-
-
-
     public static boolean bit(int bitIndex, int value) {
-        int mask =  1 << bitIndex;
+        int mask = 1 << bitIndex;
         int masked_n = value & mask;
         int thebit = masked_n >> bitIndex;
 
@@ -49,7 +46,7 @@ public class BitTools {
 
     /**
      * make a consectutive list of BitField objects for all the possible values
-     *
+     * <p>
      * eg: 00, 01, 10, 11
      *
      * @param size size of the bitfield
@@ -58,11 +55,11 @@ public class BitTools {
     public static List<BitField> makeListOfFields(int size) {
 
         // the number of fields we will need
-        double number = Math.pow(2,size);
+        double number = Math.pow(2, size);
 
         List<BitField> allFields = new ArrayList<>();
 
-        for(int i=0 ; i < number ; i++) {
+        for (int i = 0; i < number; i++) {
             BitField field = BitFieldBuilder.createWithSize(size);
             field.setToValue(i);
             allFields.add(field);

@@ -265,7 +265,7 @@ public class BitFieldImpl implements BitField {
         List<Byte> bytes = new ArrayList<>();
 
         int divider = 8;
-        if(size > 8) divider = size;
+        if (size > 8) divider = size;
         int numberToGet = (divider % 8) + 1;
 
         for (int i = 0; i < numberToGet; i++) {

@@ -1,8 +1,8 @@
 package com.neodem.relaySim.objects.component.memory;
 
-import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
+import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 
 import java.util.ArrayList;
@@ -56,11 +56,11 @@ public class RegularMemory implements Memory, BusListener {
             data.add(toStore);
         }
 
-        if(addressBus == null) {
+        if (addressBus == null) {
             addressBus = new Bus(addressWidth, name + "-Bus-Address");
             addressBus.addListener(this);
         }
-        if(dataBus == null) dataBus = new Bus(dataWidth, name + "-Bus-Data");
+        if (dataBus == null) dataBus = new Bus(dataWidth, name + "-Bus-Data");
 
         initCalled = true;
     }

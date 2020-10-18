@@ -6,7 +6,7 @@ import com.neodem.relaySim.data.bitfield.BitField;
  * Created by Vincent Fumo (neodem@gmail.com)
  * Created on 4/12/16
  */
-public class BusConnection implements BusListener{
+public class BusConnection implements BusListener {
     private Bus busA;
     private Bus busB;
 
@@ -14,9 +14,9 @@ public class BusConnection implements BusListener{
     public void dataChanged(Bus b) {
         BitField changedData = b.getData();
 
-        if(b.equals(busA)) {
+        if (b.equals(busA)) {
             busA.updateData(changedData);
-        } else if(b.equals(busB)) {
+        } else if (b.equals(busB)) {
             busB.updateData(changedData);
         }
     }

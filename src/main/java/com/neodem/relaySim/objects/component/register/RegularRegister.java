@@ -1,7 +1,7 @@
 package com.neodem.relaySim.objects.component.register;
 
-import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.Bus;
+import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import com.neodem.relaySim.objects.component.Component;
 

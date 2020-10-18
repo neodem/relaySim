@@ -35,14 +35,14 @@ public class BitFieldImplTest {
 
     @Test
     public void setBitsShouldWork() {
-        bitField.setBits(0,0,0,1);
+        bitField.setBits(0, 0, 0, 1);
 
         assertThat(bitField.getBitAsInt(0)).isEqualTo(1);
         assertThat(bitField.getBitAsInt(1)).isEqualTo(0);
         assertThat(bitField.getBitAsInt(2)).isEqualTo(0);
         assertThat(bitField.getBitAsInt(3)).isEqualTo(0);
 
-        bitField.setBits(0,1,1,1);
+        bitField.setBits(0, 1, 1, 1);
 
         assertThat(bitField.getBitAsInt(0)).isEqualTo(1);
         assertThat(bitField.getBitAsInt(1)).isEqualTo(1);
@@ -52,7 +52,7 @@ public class BitFieldImplTest {
 
     @Test
     public void intValueShouldWork() {
-        bitField.setBits(0,1,1,1);
+        bitField.setBits(0, 1, 1, 1);
         assertThat(bitField.intValue()).isEqualTo(7);
     }
 
@@ -68,7 +68,7 @@ public class BitFieldImplTest {
 
     @Test
     public void invertAllBitsShouldWork() {
-        bitField.setBits(1,0,0,1);
+        bitField.setBits(1, 0, 0, 1);
 
         assertThat(bitField.getBitAsInt(0)).isEqualTo(1);
         assertThat(bitField.getBitAsInt(1)).isEqualTo(0);
@@ -153,8 +153,8 @@ public class BitFieldImplTest {
 
     @Test
     public void getSubFieldShouldWork() throws Exception {
-        BitField testField = BitFieldBuilder.create(0,0,1,1,0,0);
-        BitField result = testField.getSubField(2,4);
+        BitField testField = BitFieldBuilder.create(0, 0, 1, 1, 0, 0);
+        BitField result = testField.getSubField(2, 4);
 
         assertThat(result.size()).isEqualTo(3);
         assertThat(result.getBitAsInt(0)).isEqualTo(1);
@@ -164,8 +164,8 @@ public class BitFieldImplTest {
 
     @Test
     public void getSubFieldWithPaddingShouldPad() throws Exception {
-        BitField testField = BitFieldBuilder.create(1,1);
-        BitField result = testField.getSubFieldWithPadding(0,3);
+        BitField testField = BitFieldBuilder.create(1, 1);
+        BitField result = testField.getSubFieldWithPadding(0, 3);
 
         assertThat(result.size()).isEqualTo(4);
         assertThat(result.getBitAsInt(0)).isEqualTo(1);
@@ -197,43 +197,43 @@ public class BitFieldImplTest {
     @Test
     public void createFromInt() throws Exception {
         BitField val = BitFieldBuilder.createFromInt(6);
-        assertThat(val).isEqualTo(BitFieldBuilder.create(1,1,0));
+        assertThat(val).isEqualTo(BitFieldBuilder.create(1, 1, 0));
     }
 
     @Test
     public void shiftRightShouldWork() {
-        BitField field = BitFieldBuilder.create(1,0,0,1);
+        BitField field = BitFieldBuilder.create(1, 0, 0, 1);
         field.shiftRight(2);
-        assertThat(field).isEqualTo(BitFieldBuilder.create(1,0));
+        assertThat(field).isEqualTo(BitFieldBuilder.create(1, 0));
     }
 
     @Test
     public void shiftLeftShouldWork() {
-        BitField field = BitFieldBuilder.create(1,0,0,1);
+        BitField field = BitFieldBuilder.create(1, 0, 0, 1);
         field.shiftLeft(3);
-        assertThat(field).isEqualTo(BitFieldBuilder.create(1,0,0,1,0,0,0));
+        assertThat(field).isEqualTo(BitFieldBuilder.create(1, 0, 0, 1, 0, 0, 0));
     }
 
     @Test
     public void shiftAndAddToRightShouldWork() {
-        BitField field = BitFieldBuilder.create(1,0,0,1);
-        field.shiftAndAddToRight(BitFieldBuilder.create(1,1,1));
-        assertThat(field).isEqualTo(BitFieldBuilder.create(1,0,0,1,1,1,1));
+        BitField field = BitFieldBuilder.create(1, 0, 0, 1);
+        field.shiftAndAddToRight(BitFieldBuilder.create(1, 1, 1));
+        assertThat(field).isEqualTo(BitFieldBuilder.create(1, 0, 0, 1, 1, 1, 1));
     }
 
     @Test
     public void combineShouldCreateProperField() {
-        BitField first = BitFieldBuilder.create(0,0,0,1,0);
-        BitField second = BitFieldBuilder.create(0,1,1);
-        BitField third = BitFieldBuilder.create(1,1,1,1);
+        BitField first = BitFieldBuilder.create(0, 0, 0, 1, 0);
+        BitField second = BitFieldBuilder.create(0, 1, 1);
+        BitField third = BitFieldBuilder.create(1, 1, 1, 1);
 
         BitField combined = BitFieldBuilder.combineShiftLeft(first, second, third);
-        assertThat(combined).isEqualTo(BitFieldBuilder.create(0,0,0,1,0, 0,1,1, 1,1,1,1));
+        assertThat(combined).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1));
     }
 
     @Test
     public void getAsBytesShouldWorkWithSmallFields() {
-        BitField field = BitFieldBuilder.create(0,0,0,1,0);
+        BitField field = BitFieldBuilder.create(0, 0, 0, 1, 0);
         List<Byte> asBytes = field.getAsBytes();
         assertThat(asBytes).isNotNull().hasSize(1);
         assertThat(asBytes.get(0)).isEqualTo((byte) 2);
@@ -241,7 +241,7 @@ public class BitFieldImplTest {
 
     @Test
     public void getAsBytesShouldWorkWith8bitfield() {
-        BitField field = BitFieldBuilder.create(0,0,0,0,0,0,1,0);
+        BitField field = BitFieldBuilder.create(0, 0, 0, 0, 0, 0, 1, 0);
         List<Byte> asBytes = field.getAsBytes();
         assertThat(asBytes).isNotNull().hasSize(1);
         assertThat(asBytes.get(0)).isEqualTo((byte) 2);
@@ -249,7 +249,7 @@ public class BitFieldImplTest {
 
     @Test
     public void getAsBytesShouldWorkWith9bitfield() {
-        BitField field = BitFieldBuilder.create(1,0,0,0,0,0,0,1,0);
+        BitField field = BitFieldBuilder.create(1, 0, 0, 0, 0, 0, 0, 1, 0);
         List<Byte> asBytes = field.getAsBytes();
         assertThat(asBytes).isNotNull().hasSize(2);
         assertThat(asBytes.get(0)).isEqualTo((byte) 2);
@@ -258,7 +258,7 @@ public class BitFieldImplTest {
 
     @Test
     public void getAsBytesShouldWork() {
-        BitField field = BitFieldBuilder.create(1,1,0,0,0,0,0,1,0);
+        BitField field = BitFieldBuilder.create(1, 1, 0, 0, 0, 0, 0, 1, 0);
         List<Byte> asBytes = field.getAsBytes();
         assertThat(asBytes).isNotNull().hasSize(2);
         assertThat(asBytes.get(0)).isEqualTo((byte) 130);
