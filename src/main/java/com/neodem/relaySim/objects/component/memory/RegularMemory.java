@@ -4,7 +4,6 @@ import com.neodem.relaySim.data.bitfield.BitField;
 import com.neodem.relaySim.data.Bus;
 import com.neodem.relaySim.data.BusListener;
 import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
-import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +29,6 @@ public class RegularMemory implements Memory, BusListener {
     private String name = "RAM";
 
     private int currentAddress;
-
-    public RegularMemory() {
-    }
 
     /**
      * @param addressWidth size of the addresssing (in bits)
@@ -114,21 +110,6 @@ public class RegularMemory implements Memory, BusListener {
         this.dataBus = dataBus;
     }
 
-    @Required
-    public void setAddressWidth(int addressWidth) {
-        this.addressWidth = addressWidth;
-    }
-
-    @Required
-    public void setDataWidth(int dataWidth) {
-        this.dataWidth = dataWidth;
-    }
-
-    @Required
-    public void setSize(int size) {
-        this.size = size;
-    }
-
     public Bus getAddressBus() {
         return addressBus;
     }
@@ -141,8 +122,4 @@ public class RegularMemory implements Memory, BusListener {
         return name;
     }
 
-    @Required
-    public void setName(String name) {
-        this.name = name;
-    }
 }

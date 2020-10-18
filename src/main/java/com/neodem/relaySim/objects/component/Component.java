@@ -2,7 +2,6 @@ package com.neodem.relaySim.objects.component;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Created by Vincent Fumo (neodem@gmail.com)
@@ -14,11 +13,12 @@ public abstract class Component {
     protected String name;
     protected boolean initCalled = false;
 
-    public Component() {
+    public Component(int size) {
+        this.size = size;
     }
 
     public Component(int size, String name) {
-        this.size = size;
+        this(size);
         this.name = name;
     }
 
@@ -28,15 +28,6 @@ public abstract class Component {
 
     public String toString() {
         return name;
-    }
-
-    @Required
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

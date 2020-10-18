@@ -17,9 +17,6 @@ public class Bus extends Component {
 
     private Collection<BusListener> listeners;
 
-    public Bus() {
-    }
-
     public Bus(int size, String name) {
         super(size, name);
         init();

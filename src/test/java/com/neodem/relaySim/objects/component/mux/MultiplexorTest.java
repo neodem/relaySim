@@ -47,9 +47,9 @@ public class MultiplexorTest {
         input0.updateData(BitFieldBuilder.createFromInt(9,4));
         input1.updateData(BitFieldBuilder.createFromInt(1,4));
         mux.setSelected(true);
-        assertThat(output).isEqualTo(BitFieldBuilder.createFromInt(1,4));
+        assertThat(output.getData()).isEqualTo(BitFieldBuilder.createFromInt(1,4));
         mux.setSelected(false);
-        assertThat(output).isEqualTo(BitFieldBuilder.createFromInt(9,4));
+        assertThat(output.getData()).isEqualTo(BitFieldBuilder.createFromInt(9,4));
 
     }
 }

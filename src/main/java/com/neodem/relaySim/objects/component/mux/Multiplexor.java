@@ -17,10 +17,6 @@ public class Multiplexor extends Component implements BusListener {
     // if !selected, input0 goes to out
     private boolean selected;
 
-    public Multiplexor() {
-        super();
-    }
-
     public Multiplexor(int size, String name) {
         super(size, name);
     }

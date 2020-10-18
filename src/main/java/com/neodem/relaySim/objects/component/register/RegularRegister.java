@@ -18,6 +18,16 @@ public class RegularRegister extends Component implements Register {
     private BitField input;
     private boolean selected = false;
 
+    public RegularRegister(int size, Bus inBus) {
+        super(size);
+        this.inBus = inBus;
+    }
+
+    public RegularRegister(int size, String name, Bus inBus) {
+        super(size, name);
+        this.inBus = inBus;
+    }
+
     @Override
     public void chipSelect(boolean selected) {
         this.selected = selected;

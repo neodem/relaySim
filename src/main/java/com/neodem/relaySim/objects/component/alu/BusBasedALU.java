@@ -39,10 +39,6 @@ public class BusBasedALU extends Component implements BusListener {
     private BitField inB;
     private BitField control;
 
-    public BusBasedALU() {
-        super();
-    }
-
     public BusBasedALU(int size, String name) {
         super(size, name);
         init();
