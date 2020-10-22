@@ -1,7 +1,12 @@
 package com.neodem.relaySim.objects.component.alu;
 
+import com.neodem.relaySim.data.bitfield.BitField;
+import com.neodem.relaySim.data.bitfield.BitFieldBuilder;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by: Vincent Fumo (vincent_fumo@cable.comcast.com)
@@ -21,49 +26,49 @@ public class HardwareALUProxyTest {
         alu = null;
     }
 
-//    @Test
-//    public void anAddShouldWorkNoCarry() throws Exception {
-//
-//        boolean s0 = false;
-//        boolean s1 = false;
-//        boolean cIn = false;
-//        boolean bInv = false;
-//
-//        BitField a = BitFieldBuilder.create(0, 0, 0, 0);
-//        BitField b = BitFieldBuilder.create(0, 0, 0, 0);
-//        ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
-//        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 0));
-//        assertThat(result.isCarryOut()).isFalse();
-//        assertThat(result.isOverflow()).isFalse();
-//
-//        a = BitFieldBuilder.create(0, 0, 0, 1);
-//        b = BitFieldBuilder.create(0, 0, 0, 0);
-//        result = alu.operate(s0, s1, cIn, bInv, a, b);
-//        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1));
-//        assertThat(result.isCarryOut()).isFalse();
-//        assertThat(result.isOverflow()).isFalse();
-//
-//        a = BitFieldBuilder.create(0, 0, 0, 0);
-//        b = BitFieldBuilder.create(0, 0, 0, 1);
-//        result = alu.operate(s0, s1, cIn, bInv, a, b);
-//        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1));
-//        assertThat(result.isCarryOut()).isFalse();
-//        assertThat(result.isOverflow()).isFalse();
-//
-//        a = BitFieldBuilder.create(0, 0, 1, 0);
-//        b = BitFieldBuilder.create(0, 0, 0, 1);
-//        result = alu.operate(s0, s1, cIn, bInv, a, b);
-//        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 1, 1));
-//        assertThat(result.isCarryOut()).isFalse();
-//        assertThat(result.isOverflow()).isFalse();
-//
-//        a = BitFieldBuilder.create(1, 0, 1, 0);
-//        b = BitFieldBuilder.create(0, 1, 0, 1);
-//        result = alu.operate(s0, s1, cIn, bInv, a, b);
-//        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(1, 1, 1, 1));
-//        assertThat(result.isCarryOut()).isFalse();
-//        assertThat(result.isOverflow()).isFalse();
-//    }
+    @Test
+    public void anAddShouldWorkNoCarry() throws Exception {
+
+        boolean s0 = false;
+        boolean s1 = false;
+        boolean cIn = false;
+        boolean bInv = false;
+
+        BitField a = BitFieldBuilder.create(0, 0, 0, 0);
+        BitField b = BitFieldBuilder.create(0, 0, 0, 0);
+        ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 0));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 0, 1);
+        b = BitFieldBuilder.create(0, 0, 0, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 0, 0);
+        b = BitFieldBuilder.create(0, 0, 0, 1);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 1, 0);
+        b = BitFieldBuilder.create(0, 0, 0, 1);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 1, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(1, 0, 1, 0);
+        b = BitFieldBuilder.create(0, 1, 0, 1);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(1, 1, 1, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+    }
 //
 //    @Test
 //    public void anAddShouldWorkWithCarryIn() throws Exception {

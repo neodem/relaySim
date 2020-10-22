@@ -264,9 +264,13 @@ public class BitFieldImpl implements BitField {
         //0 is lsb, size is the msb
         List<Byte> bytes = new ArrayList<>();
 
-        int divider = 8;
-        if (size > 8) divider = size;
-        int numberToGet = (divider % 8) + 1;
+        int numberToGet = size / 8;
+        int remainder = size % 8;
+        if(remainder > 0) numberToGet++;
+
+//        int divider = 8;
+//        if (size > 8) divider = size;
+//        int numberToGet = (divider % 8) + 1;
 
         for (int i = 0; i < numberToGet; i++) {
             int from = i * 8;

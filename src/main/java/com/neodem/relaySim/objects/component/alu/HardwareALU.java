@@ -113,7 +113,7 @@ public class HardwareALU implements ALU {
         SerialPort[] commPorts = SerialPort.getCommPorts();
 
 
-        SerialPort sp = commPorts[1];
+        SerialPort sp = commPorts[2];
 
         // default connection settings for Arduino
         sp.setComPortParameters(9600, 8, 1, 0);
