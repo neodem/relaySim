@@ -32,6 +32,39 @@ public class HardwareALUProxyTest {
     }
 
     @Test
+    public void testAdd() {
+
+        boolean s0 = false;
+        boolean s1 = false;
+        boolean cIn = false;
+        boolean bInv = false;
+
+        BitField a = BitFieldBuilder.create(1, 1, 1, 0);
+        BitField b = BitFieldBuilder.create(0, 0, 0, 1);
+        ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(1, 1, 1, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+    }
+
+
+    @Test
+    public void whyDoesThisNotWork() {
+
+        boolean s0 = false;
+        boolean s1 = false;
+        boolean cIn = false;
+        boolean bInv = false;
+
+        BitField a = BitFieldBuilder.create(1, 0, 1, 0);
+        BitField b = BitFieldBuilder.create(0, 1, 0, 1);
+        ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(1, 1, 1, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+    }
+
+    @Test
     public void anAddShouldWorkNoCarry() throws Exception {
 
         boolean s0 = false;
@@ -57,6 +90,48 @@ public class HardwareALUProxyTest {
         b = BitFieldBuilder.create(0, 0, 0, 1);
         result = alu.operate(s0, s1, cIn, bInv, a, b);
         assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 1, 0);
+        b = BitFieldBuilder.create(0, 0, 0, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 1, 0));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 0, 0);
+        b = BitFieldBuilder.create(0, 0, 1, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 1, 0));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 1, 0, 0);
+        b = BitFieldBuilder.create(0, 0, 0, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 1, 0, 0));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 0, 0);
+        b = BitFieldBuilder.create(0, 1, 0, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 1, 0, 0));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(1, 0, 0, 0);
+        b = BitFieldBuilder.create(0, 0, 0, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(1, 0, 0, 0));
+        assertThat(result.isCarryOut()).isFalse();
+        assertThat(result.isOverflow()).isFalse();
+
+        a = BitFieldBuilder.create(0, 0, 0, 0);
+        b = BitFieldBuilder.create(1, 0, 0, 0);
+        result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(1, 0, 0, 0));
         assertThat(result.isCarryOut()).isFalse();
         assertThat(result.isOverflow()).isFalse();
 
@@ -123,6 +198,22 @@ public class HardwareALUProxyTest {
         assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 1));
         assertThat(result.isCarryOut()).isTrue();
         assertThat(result.isOverflow()).isFalse();
+    }
+
+    @Test
+    public void anAddShouldWorkCheckCarryOut() throws Exception {
+        boolean s0 = false;
+        boolean s1 = false;
+        boolean cIn = false;
+        boolean bInv = false;
+
+        BitField a = BitFieldBuilder.create(1, 0, 1, 0);
+        BitField b = BitFieldBuilder.create(0, 1, 0, 1);
+        ALUResult result = alu.operate(s0, s1, cIn, bInv, a, b);
+        assertThat(result.getResult()).isEqualTo(BitFieldBuilder.create(0, 0, 0, 0));
+        assertThat(result.isCarryOut()).isTrue();
+        assertThat(result.isOverflow()).isFalse();
+
     }
 
     @Test(dataProvider = "all4bits")
